@@ -1,0 +1,319 @@
+
+## Workflow in practice: Pipes and functions
+
+## The gapminder dataset
+
+The **Gapminder** dataset contains longitudinal data describing social and economic indicators for countries around the world from 1952 to 2007, measured at five-year intervals. For each country and year, it includes life expectancy at birth (`lifeExp`), population size (`pop`), and gross domestic product per capita (`gdpPercap`), along with the country name and its continent. The structure is tidy: each row represents one country in one specific year, making it ideal for analysing changes over time, comparing continents, and building reproducible workflows using grouping, filtering, summarising, and visualisation in R.
+
+```{r}
+#install.packages("gapminder")
+library(gapminder)
+data(gapminder)
+
+library(dplyr) #  piping and data wrangling
+library(ggplot2) #  Ploting
+```
+
+Use some functions you know to take a look at the data (e.g. str, head, names, summary, dim...).
+
+```{r}
+# Write your code here:
+# ANSWER
+```
+
+Below is a curated set of class exercises (increasing difficulty). Each item includes the task, the *type* (write / pipe-decode / debug / predict / design).
+
+# 🪜 FUNCTION CHALLENGE LADDER 
+
+## Level 0. Warm-up. Pipes decoding (trace the pipeline)
+
+**(Decode) Explain this pipeline in plain English (or pseudocode).** Write step-by-step what happens to the data at each pipe stage and what the final table contains.
+
+```{r}
+gapminder %>% filter(year == 2007)
+```
+
+ANSWER:
+
+```{r}
+gapminder %>%   group_by(continent)
+```
+
+ANSWER:
+
+```{r}
+gapminder %>%
+  filter(year == 2007) %>%
+  mutate(lifeExp_plus5 = lifeExp + 5)
+```
+
+ANSWER:
+
+```{r}
+gapminder %>%   group_by(continent) %>%   summarise(n = n())
+```
+
+ANSWER:
+
+```{r}
+gapminder %>%
+  group_by(country) %>%
+  summarise(max_lifeExp = max(lifeExp, na.rm = TRUE)) 
+
+gapminder %>%
+  group_by(country) %>%
+  summarise(max_lifeExp = max(lifeExp, na.rm = TRUE)) %>%
+  arrange(desc(max_lifeExp))  %>%
+  slice_head(n = 3)
+
+```
+
+ANSWER:
+
+What is the difference between these codes. Why do the first and the last produce (apparently) the same result?
+
+```{r}
+gapminder %>%
+  group_by(country) %>%
+  summarise(max_lifeExp = max(lifeExp, na.rm = TRUE)) %>%
+  arrange(desc(max_lifeExp)) %>%
+  slice_head(n = 5)
+
+gapminder %>%
+  arrange(desc(lifeExp)) %>%
+  slice_head(n = 5) %>%
+  group_by(country) %>%
+  summarise(max_lifeExp = max(lifeExp, na.rm = TRUE))
+
+gapminder %>%
+  arrange(desc(lifeExp)) %>%                    
+  distinct(country, .keep_all = TRUE) %>%       
+  select(country, lifeExp) %>%                  
+  rename(max_lifeExp = lifeExp) %>%             
+  arrange(desc(max_lifeExp)) %>%                
+  slice_head(n = 5)            
+```
+
+ANSWER:
+
+Consider the following code (delete the "\#"), and explain why the filter does not work as intended. What dataset is being filtered at that stage? Correct the pipeline so that you count rows per continent **only for the year 2007**.
+
+```{r}
+# gapminder %>%
+#  group_by(continent) %>%
+#  summarise(n = n()) %>%
+#  filter(year == 2007)
+```
+
+ANSWER:
+
+**(Rewrite) Convert to piped form:**
+
+```{r}
+# Step 1: keep only rows for Europe
+step1 <- filter(gapminder, continent == "Europe")
+
+# Step 2: add derived columns (total GDP and GDP in millions)
+step2 <- mutate(step1,
+                gdp_total = gdpPercap * pop,
+                gdp_per_million = gdp_total / 1e6)
+
+# Step 3: create grouping by country
+step3 <- group_by(step2, country)
+
+# Step 4: summarise to get median GDP per million per country
+step4 <- summarise(step3,
+                   median_gdp_million = median(gdp_per_million, na.rm = TRUE))
+
+# Step 5: arrange the result from smallest -> largest median (use desc() if you want largest first)
+step5 <- arrange(step4, median_gdp_million)
+
+# Show the final result
+step5
+```
+
+```{r}
+# ANSWER:
+
+```
+
+------------------------------------------------------------------------
+
+## Level 1. The Pain (No Functions Yet)
+
+Which continent had the higher life expectancy in 2007?
+
+```{r}
+# ANSWER
+```
+
+And 1997?
+
+```{r}
+# ANSWER
+```
+
+Obtain a list of all the countries found in the gapminder dataset, consider using pipes, but feel free to use other ways.
+
+```{r}
+# ANSWER
+```
+
+Check the life expectancy in "United Kingdom" for all possible years (you might need to copy-paste similar lines multiple times). Make sure you know how the UK is named in the dataset by using the previous call.
+
+```{r}
+# ANSWER
+```
+
+What part of this code varies? What part repeats?
+
+ANSWER:
+
+## Level 2. Write a function
+
+The function needs to take a year as argument, and return a tibble with the mean life expectancy for all continents on the explicited year (year_value). This might be your first function, so let's take it easy. First explain which tasks will you be doing. It is easier than it seems. You just have to copy what you designed previously but using the "year_value" instead of the absolute year. Note that the function definition will not return anything, but the following chunk will return the result.
+
+```{r}
+mean_life_by_continent <- function(year_value) {
+  #  ADD TASKS HERE
+}
+```
+
+Use the function. Change the years to check it works:
+
+```{r}
+mean_life_by_continent(2007)
+mean_life_by_continent(1962)
+```
+
+## Level 3. Improve the design
+
+The function takes the dataset internally, and therefore is not fully reusable. Modify the function so it takes a second argument, which is the dataframe(df). Make sure you use both "df" and "year_value" inside the functions.
+
+```{r}
+mean_by_continent_year <- function(df, year_value) {
+   #  ADD TASKS HERE
+}
+```
+
+```{r}
+mean_by_continent_year(gapminder, 2007)
+```
+
+## Level 4. Generalise to other variables
+
+What if we want GDP per capita instead of life expectancy? Modify the function so it can take any variable. Some parts of the code have been already written. If you are not sure what specific parts of the code are doing, feel free to explore online and add your own explanation.
+
+```{r}
+mean_by_continent_year_var <- function(df, year_value, var_name) {
+  df %>%
+    filter #ADD CODE
+    group_by # ADD CODE
+    summarise(mean_value = mean(.data[[var_name]], na.rm = TRUE)) %>%
+    arrange # ADD CODE
+}
+```
+
+```{r}
+# mean_by_continent_year_var(gapminder, 2007, "lifeExp")
+# mean_by_continent_year_var(gapminder, 2007, "gdpPercap")
+```
+
+## Level 5. Add ranking control
+
+Modify your function to return only the top N continents. Add an argument called top_n = 3.
+
+```{r}
+
+```
+
+## Level 6. Debugging
+
+How would you use this function? What is wrong with it?
+
+```{r}
+bad_function <- function(df, year_value, var_name) {
+  gapminder %>%
+    group_by(continent) %>%
+    summarise(mean_value = mean(var_name))
+}
+```
+
+## Level 7. Test yourself. Are you able to explain this function?
+
+```{r}
+# plot_trend: plot time trend of the mean of a variable for a continent
+#
+# Arguments:
+#   df            - data frame containing at least columns "year" and "continent" and the variable named by var_name
+#   continent_name- character scalar, the continent to filter on (e.g. "Europe")
+#   var_name      - character scalar, name of the numeric variable to summarise (e.g. "lifeExp" or "gdpPercap")
+#   smooth        - logical (default TRUE). If TRUE the plot includes a smooth trend line (geom_smooth); if FALSE no smoothing.
+#
+# Behaviour:
+#   - computes the mean of var_name for each year within the chosen continent (NA values ignored)
+#   - builds and returns a ggplot object showing year (x) vs mean value (y) with points and a connecting line
+#   - if smooth == TRUE, adds a smooth trend layer
+#   - does NOT modify the input df and does NOT save any files or objects to disk
+#
+# Requirements:
+#   - dplyr and ggplot2 should be available (library(dplyr); library(ggplot2))
+#   - var_name must exist in df; a clear error is thrown otherwise
+#
+plot_trend <- function(df, continent_name, var_name, smooth = TRUE) {
+  # defensive checks
+  if (!is.data.frame(df)) stop("df must be a data frame")
+  if (!"year" %in% names(df)) stop("df must contain a 'year' column")
+  if (!"continent" %in% names(df)) stop("df must contain a 'continent' column")
+  if (!is.character(continent_name) || length(continent_name) != 1) stop("continent_name must be a single string")
+  if (!is.character(var_name) || length(var_name) != 1) stop("var_name must be a single string")
+  if (!var_name %in% names(df)) stop(paste0("Variable '", var_name, "' not found in df"))
+  if (!is.logical(smooth) || length(smooth) != 1) stop("smooth must be a single logical value (TRUE or FALSE)")
+  
+  # create a small summary table (this is local to the function; we do not assign to global)
+  summary_tbl <- df %>%
+    dplyr::filter(continent == continent_name) %>%              # keep only rows for the requested continent
+    dplyr::group_by(year) %>%                                   # group by year so summaries are per-year
+    dplyr::summarise(
+      mean_value = mean(.data[[var_name]], na.rm = TRUE),       # compute mean of chosen variable, ignoring NA
+      .groups = "drop"                                          # drop grouping after summarise (return ungroupped tibble)
+    )
+  
+  # build the ggplot object
+  p <- ggplot2::ggplot(summary_tbl, ggplot2::aes(x = year, y = mean_value)) +
+    ggplot2::geom_point() +      # show the yearly mean as points
+    ggplot2::geom_line() +       # connect the points with lines to visualise the trend
+    ggplot2::labs(
+      x = "Year",
+      y = paste0("Mean ", var_name),
+      title = paste0("Trend of mean ", var_name, " in ", continent_name)
+    ) +
+    ggplot2::theme_minimal()     # a clean, minimal theme for readability
+  
+  # optionally add a smooth trend (loess by default; automatic choice by ggplot2)
+  if (isTRUE(smooth)) {
+    p <- p + ggplot2::geom_smooth(se = TRUE, method = "loess")
+  }
+  
+  # Return the ggplot object. In an interactive session printing the object will display the plot.
+  p
+}
+
+
+```
+
+Change the countries or variables.
+
+```{r}
+plot_trend(gapminder, "Africa", "gdpPercap", smooth = TRUE)
+```
+
+## FINAL CHALLENGE
+
+Would you be able to modify the created function to change the color of the plot for example?
+
+How would you use the function to quickly obtain a plot for all the continents or/and countries? Could you code it? Start first with designing the pseudocode. How much time do you feel this will save?
+
+```{r}
+# ANSWER
+```
