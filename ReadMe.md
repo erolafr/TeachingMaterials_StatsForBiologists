@@ -22,55 +22,83 @@ An introduction to RStudio, basic data handling, plotting, and reproducible work
 ### 2. Descriptors and Visualisations
 📄 [2_Descriptors_and_visualisations.md](./Year%201%20Research%20Skills%20-%20Statistics%20and%20computing/2_Descriptors_and_visualisations.md)
 
-Students explore biological datasets using summary statistics and graphical visualisation. The session focuses on understanding variation, distributions, and how visualisations influence interpretation.
+This practical will build on the introduction to R and RStudio from the first session and begin applying these tools to topics in statistical inference (specifically, data description) and data visualisation, following the early chapters of Analysis of Biological Data by Whitlock and Schluter. Specifically, we will play good/bad visualisation games and use R to explore red kite longevity data to learn how to summarise a biological variable. You will calculate key statistics, create simple visualisations, and think about how to communicate typical lifespan, variation, and uncertainty when answering the question: “How long will my red kite live?”
 
 ---
 
 ### 3. Catfish Diet — Comparing Groups
 📄 [CatfishDiet.md](./Year%201%20Research%20Skills%20-%20Statistics%20and%20computing/CatfishDiet.md)
 
-An applied practical investigating dietary differences in catfish populations. Students learn how to compare groups statistically while interpreting ecological meaning from the results.
+This practical builds on the introduction to R and RStudio and applies these tools to probability concepts in a biological context. Using a simulated dataset inspired by real ecological studies, we will explore catfish diet composition to learn how probabilities are used to describe biological observations. You will use R to generate data, calculate probabilities and build simple probability trees. Throughout the session, you will think critically about sample size, variability, and study design while addressing the question: “Is climate change shifting the catfish diet?”. A few functions are provided to play with sampling effort and the representativity of proportions.
 
 ---
 
 ### 4. Biostimulants — Experimental Comparisons
 📄 [Biostimulants.md](./Year%201%20Research%20Skills%20-%20Statistics%20and%20computing/Biostimulants.md)
 
-A plant biology case study introducing experimental design, treatment comparisons, and interpretation of biological effects under uncertainty.
+This practical builds on previous sessions and introduces hypothesis testing as a tool for answering biological questions about treatment effects. Using a simple experimental example inspired by plant biology, we will test whether a biostimulant affects plant growth compared to an untreated control. You will use R to explore the data, visualise differences between groups, define the null and alternative hypoteses, and apply basic statistical tests to evaluate whether observed differences are likely due to the treatment or to random variation. Throughout the session, you will focus on interpreting results in a biological context and understanding what it means to conclude that a treatment “works” or “does not work”.
 
 ---
 
 ### 5. Rewild or Wait — Analysing Proportions
 📄 [Rewild_or_Wait_analysing_proportions_with_Answers.md](./Year%201%20Research%20Skills%20-%20Statistics%20and%20computing/Rewild_or_Wait_analysing_proportions_with_Answers.md)
 
-Students analyse proportional data within a conservation management scenario. The practical introduces contingency analyses and interpretation of categorical outcomes in ecological decision-making.
+This practical uses a seed-germination rewilding scenario to teach proportion and count data analysis in R. You will visualise germination proportions, estimate germination rates with Agresti–Coull confidence intervals and exact binomial tests, compare treatments using two-sample proportion tests (χ² / Fisher) and effect-size CIs, and apply goodness-of-fit tests (χ² / G-test and Poisson fit) where appropriate. Finally, you will quantify uncertainty with simple simulations, use a Risk Matrix to turn CIs into management actions (Proceed / Delay), and run an interactive decision simulator that links probabilities, seed availability and costs to a defensible conservation recommendation.
 
 ---
 
-### 6. Interactive Habitat Protection
+### 6. T-test: Habitat Protection
 📄 [interactive_habitat_protection.md](./Year%201%20Research%20Skills%20-%20Statistics%20and%20computing/interactive_habitat_protection.md)
 
-A practical exploring habitat protection and biodiversity responses. Students evaluate evidence and statistical outputs within realistic conservation contexts.
+A practical exploring habitat protection and biodiversity responses. Students evaluate evidence and statistical outputs within realistic conservation contexts.Does habitat protection work? In this practical, you will use paired t-tests and visualisations to analyse ecological data and uncover the answer.
 
 ---
 
-### 7. Your First ANOVA
+### 7. Experimental Designing - The game
+📄 [Link to the app](https://erolafenollosa.shinyapps.io/ExperimentalDesignGame/)
+
+In this session, you will explore key principles of experimental design through interactive activities. You will design experiments, identify potential sources of bias and variability, and investigate how factors and their interactions influence results. The session concludes with a short challenge to diagnose and critique experimental designs.
+
+---
+
+### 8. Your First ANOVA
 📄 [Your_first_ANOVA.md](./Year%201%20Research%20Skills%20-%20Statistics%20and%20computing/Your_first_ANOVA.md)
 
-An introduction to ANOVA using biological datasets. Students learn how to compare multiple groups, interpret variance, and critically evaluate statistical evidence.
+In this session, we will explore the connecting thread between t-tests, linear regression, and ANOVA. Specifically, you will learn how to use a one-way ANOVA in R to test whether a grouping variable affects a continuous variable. You will create and visualise your own dataset, check ANOVA assumptions, interpret the ANOVA table, and perform post hoc tests to identify which groups differ. Finally, you will apply this knowledge to a real scientific article, identifying how ANOVA is used and how the results are visualised and interpreted in a biological context.
 
 ---
 
-### 8. Predicting Human Impact
+### 9. Can we predict animal behaviour? Building and evaluating linear models in Ecology
 📄 [PredictHumanImpact.md](./Year%201%20Research%20Skills%20-%20Statistics%20and%20computing/PredictHumanImpact.md)
 
-A practical focused on linear models and prediction. Students investigate how human activity influences animal behaviour and ecological responses using regression approaches.
+In this session, we will learn how to fit and interpret linear models in R, report the information they provide, and distinguish between good and poor predictive models. Using a wildlife conservation scenario, we will investigate whether human activity can predict changes in animal behaviour and discuss how these models can inform real management decisions.
+
+---
+### 10. Hourses for Courses - The Game
+	
+In this session, we step back and connect everything you’ve learned. From probability rules to hypothesis tests, from t-tests to chi-square, we will bring all the pieces together into one clear decision framework. Through an interactive challenge, you’ll practise identifying the structure of a problem, distinguishing probability from inference, and matching each research question to the most appropriate statistical method and visualisation. By the end of the class, you’ll have a simple decision map you can reuse next term and beyond, helping you confidently answer one of the most important questions in statistics: Which method should I use — and why?
+All the game contents, and results can be downloaded from [the folder](https://github.com/erolafr/TeachingMaterials_StatsForBiologists/tree/main/Year%201%20Research%20Skills%20-%20Statistics%20and%20computing/Final_CoursesForHorses). 
 
 ---
 
 ## Year 2 — Statistics and Scientific Methods
 
-Upload in progress
+These materials build on the Year 1 practicals by moving further into data preparation, workflow design, and reproducible scientific analysis. The emphasis shifts from performing statistical tests to developing reliable coding habits, organising analyses clearly, and treating R as a scientific tool for transparent and reproducible research. The two included sessions are 2h computer practicals that fit in a series of sessions on R skills. 
+
+---
+
+
+### 1. Workflow, Pipes and Functions
+📄 [WorkflowChallenge.md](./Year%202%20Statistics%20and%20Scientific%20methods/Workflow_pipes_and_functions/WorkflowChallenge.md)
+
+This session focuses on building more efficient and readable workflows in R using functions, pipes, and structured code. Students move from isolated commands toward cleaner analytical workflows that are easier to understand, reproduce, and expand. The practical has several levels of programing thinking to develop their skills.
+
+### 2. Data Cleaning
+📄 [CleaningChallenge.md](./Year%202%20Statistics%20and%20Scientific%20methods/DataCleaning/CleaningChallenge.md)
+
+This practical introduces the realities of messy biological data and the importance of checking, tidying, and preparing datasets before analysis. Students develop good practices around data quality, transparency, and reproducible workflows through a data cleaning challenge, with a final function that evaluates how clean their dataset is.
+
+---
 
 
 # Teaching Philosophy
@@ -96,7 +124,7 @@ to:
 - **tidyverse**
 - **ggplot2**
 - **Quarto**
-- **Shiny** (for selected interactive activities)
+- **Shiny** 
 
 ---
 
@@ -109,5 +137,6 @@ This repository is shared for educational purposes under the MIT License.
 # Author
 
 Developed by **Erola Fenollosa**  [Contact info](https://erolafenollosa.weebly.com/)
+
 Department of Biology  
 University of Oxford
