@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Erola Fenollosa">
+
+<title>Can We Predict Animal Behaviour?</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="PredictHumanImpact_files/libs/clipboard/clipboard.min.js"></script>
+<script src="PredictHumanImpact_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="PredictHumanImpact_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="PredictHumanImpact_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="PredictHumanImpact_files/libs/quarto-html/popper.min.js"></script>
+<script src="PredictHumanImpact_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="PredictHumanImpact_files/libs/quarto-html/anchor.min.js"></script>
+<link href="PredictHumanImpact_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="PredictHumanImpact_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="PredictHumanImpact_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="PredictHumanImpact_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="PredictHumanImpact_files/libs/bootstrap/bootstrap-9e3ffae467580fdb927a41352e75a2e0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Can We Predict Animal Behaviour?</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Erola Fenollosa </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>This week we will explore one of the most important ideas in modern biology: <strong>Can we predict biology?</strong></p>
+<p>Biologists are often interested in understanding whether one variable can help us predict another. For example:</p>
+<ul>
+<li><p>Can temperature predict coral bleaching?</p></li>
+<li><p>Can pollution predict biodiversity loss?</p></li>
+<li><p>Can human activity predict animal stress?</p></li>
+</ul>
+<p>Today, you will become behavioural ecologists studying how wildlife responds to human disturbance across protected natural areas.</p>
+<p>Researchers collected data from several wildlife reserves with different levels of tourism and human activity. Your job is to investigate whether human presence can predict changes in animal behaviour.</p>
+</section>
+<section id="the-dataset" class="level1">
+<h1>The Dataset</h1>
+<p>Each row represents one wildlife reserve.</p>
+<p>The dataset contains:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 66%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Visitors_per_day</td>
+<td>Average number of visitors entering the reserve each day</td>
+</tr>
+<tr class="even">
+<td>Noise_level_dB</td>
+<td>Average environmental noise level</td>
+</tr>
+<tr class="odd">
+<td>Distance_to_road_km</td>
+<td>Distance to the nearest major road</td>
+</tr>
+<tr class="even">
+<td>Vigilance_percent</td>
+<td>Percentage of time animals spend scanning for danger</td>
+</tr>
+<tr class="odd">
+<td>Feeding_time_min</td>
+<td>Average feeding time per hour</td>
+</tr>
+<tr class="even">
+<td>Cortisol_ng_ml</td>
+<td>Stress hormone concentration</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="load-the-dataset" class="level1">
+<h1>Load the dataset</h1>
+<p><em>(The file must be at the same folder where this Quarto file is stored)</em></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>wildlife <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"wildlife_behaviour_practical.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="load-packages" class="level1">
+<h1>Load packages</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'ggplot2' was built under R version 4.5.3</code></pre>
+</div>
+</div>
+<section id="section" class="level3">
+<h3 class="anchored" data-anchor-id="section"></h3>
+</section>
+</section>
+<section id="step-1---see-the-pattern" class="level1">
+<h1>STEP 1 - SEE THE PATTERN</h1>
+<p>We will start with the question: <strong>Can human visitors predict vigilance behaviour on other animals?</strong></p>
+<section id="q0.-before-looking-at-the-data-or-fit-the-model-make-a-prediction." class="level2">
+<h2 class="anchored" data-anchor-id="q0.-before-looking-at-the-data-or-fit-the-model-make-a-prediction.">Q0. Before looking at the data or fit the model, make a prediction.</h2>
+<p>I predict that as visitor numbers increase, vigilance behaviour will… ###</p>
+<p><span style="color:gray; font-size:0.9em">Possible response: Good answers will include the following elements: direction of the association between variables (e.g.&nbsp;increase/decrease/stay the same with increasing human disturbance), the magnitude (e.g.&nbsp;big/small increase/decrease in terms of how many visitors will make an actual impact to behaviour), the proportionality (e.g.&nbsp;the relationship is linear/exponential/sigmoidal…), and the expected variability (all reserves will behave in the same way, or not, and increased/decreased varibility is expected with increasing/decreasing human presence).</span></p>
+</section>
+</section>
+<section id="visualise-the-relationship" class="level1">
+<h1>Visualise the relationship</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wildlife,</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> Visitors_per_day,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Vigilance_percent)) <span class="sc">+</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">colour =</span> <span class="st">"darkorange3"</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"👀 Animal vigilance vs human visitors"</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Visitors per day"</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Vigilance behaviour (%)"</span>) <span class="sc">+</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="PredictHumanImpact_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="questions" class="level1">
+<h1>Questions</h1>
+<section id="q1.-describe-the-relationship-you-observe." class="level2">
+<h2 class="anchored" data-anchor-id="q1.-describe-the-relationship-you-observe.">Q1. Describe the relationship you observe.</h2>
+<section id="section-1" class="level3">
+<h3 class="anchored" data-anchor-id="section-1"></h3>
+<p><span style="color:gray; font-size:0.9em">Hint. Think about: direction, strength, variability. Are you surprised?</span></p>
+</section>
+</section>
+<section id="q2.-propose-a-scientific-hypothesis-why-might-animals-become-more-vigilant-in-areas-with-high-human-activity" class="level2">
+<h2 class="anchored" data-anchor-id="q2.-propose-a-scientific-hypothesis-why-might-animals-become-more-vigilant-in-areas-with-high-human-activity">Q2. Propose a scientific hypothesis: Why might animals become more vigilant in areas with high human activity?</h2>
+<section id="section-2" class="level3">
+<h3 class="anchored" data-anchor-id="section-2"></h3>
+<p><span style="color:gray; font-size:0.9em">Possible response: Animals may perceive humans as potential threats or disturbances, causing them to spend more time scanning their environment.</span></p>
+</section>
+</section>
+<section id="q3.-why-do-you-think-is-it-important-to-prepare-a-guess-and-look-at-the-graph-before-running-the-statistics" class="level2">
+<h2 class="anchored" data-anchor-id="q3.-why-do-you-think-is-it-important-to-prepare-a-guess-and-look-at-the-graph-before-running-the-statistics">Q3. Why do you think is it important to prepare a guess and look at the graph before running the statistics?</h2>
+<section id="section-3" class="level3">
+<h3 class="anchored" data-anchor-id="section-3"></h3>
+<p><span style="color:gray; font-size:0.9em">Possible response: Graphs help us understand the biological pattern and identify unusual observations or non-linear relationships. The data could contain some <em>outliers</em> that we might need to take a look at.</span></p>
+</section>
+<section id="section-4" class="level3">
+<h3 class="anchored" data-anchor-id="section-4"></h3>
+</section>
+</section>
+</section>
+<section id="step-2---build-the-model" class="level1">
+<h1>STEP 2 - BUILD THE MODEL</h1>
+</section>
+<section id="what-does-a-model-mean" class="level1">
+<h1>What does “a model” mean?</h1>
+<p>A linear model is “just” an equation that describes the relationship between two variables using a straight line. The model allows us to:</p>
+<ul>
+<li><p>describe the relationship,</p></li>
+<li><p>test whether the association is statistically significant,</p></li>
+<li><p>and make predictions.</p></li>
+</ul>
+<p>Have you ever fitted and used a model before? Perhaps a calibration curve in the lab? Think about how you used it to estimate unknown values.</p>
+<p><strong>Can you think of any other models you have used today</strong>?</p>
+<p>(a few examples: estimating travel time using Google Maps, checking the weather forecast before leaving home, Spotify recommending songs you might like, TikTok deciding which videos appear on your feed, your phone’s face recognition, fitness watches estimating calories burned, Netflix recommending films, …). Did you know all of these systems rely on predictive models?</p>
+</section>
+<section id="fit-the-model" class="level1">
+<h1>Fit the model</h1>
+<p>Let’s get back to the model we are building today. We were trying to see if there is any association between the number of visitors per day in multiple wildlife reserves and the time animals spend scanning for danger (i.e.&nbsp;vigilant behaviour) to understand human impact.</p>
+<p>Take a look at the structure we use in R to fit a model between two variables:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Vigilance_percent <span class="sc">~</span> Visitors_per_day, <span class="at">data =</span> wildlife)  </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Vigilance_percent ~ Visitors_per_day, data = wildlife)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-10.0570  -4.0928  -0.4968   3.5337  11.9168 
+
+Coefficients:
+                  Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)      11.435776   1.661977   6.881 1.38e-08 ***
+Visitors_per_day  0.077119   0.009232   8.353 8.96e-11 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 5.324 on 46 degrees of freedom
+Multiple R-squared:  0.6027,    Adjusted R-squared:  0.5941 
+F-statistic: 69.78 on 1 and 46 DF,  p-value: 8.961e-11</code></pre>
+</div>
+</div>
+<p>Visualise the model</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wildlife,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> Visitors_per_day,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Vigilance_percent)) <span class="sc">+</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">colour =</span> <span class="st">"darkorange3"</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">se =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">colour =</span> <span class="st">"firebrick"</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill =</span> <span class="st">"darkorange3"</span>) <span class="sc">+</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"👀 Animal vigilance vs human visitors"</span>,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Visitors per day"</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Vigilance behaviour (%)"</span>) <span class="sc">+</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="PredictHumanImpact_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="questions-1" class="level1">
+<h1>Questions</h1>
+<section id="q4.-what-is-the-slope-of-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="q4.-what-is-the-slope-of-the-model">Q4. What is the slope of the model?</h2>
+<section id="section-5" class="level3">
+<h3 class="anchored" data-anchor-id="section-5"></h3>
+<p><span style="color:gray; font-size:0.9em">Hint. Look in the coefficients table. If you feel overwhelmed by the amount of numbers go back to the plot and explore what the slope should be and look for a similar number in the table. There are lots of numbers here, is normal to feel overwhelmed at first sight.</span></p>
+</section>
+</section>
+<section id="q5.-what-are-the-units-of-the-slope" class="level2">
+<h2 class="anchored" data-anchor-id="q5.-what-are-the-units-of-the-slope">Q5. What are the units of the slope?</h2>
+<section id="section-6" class="level3">
+<h3 class="anchored" data-anchor-id="section-6"></h3>
+<p><span style="color:gray; font-size:0.9em">Hint. The slope describes: change in Y per unit of X. Replace Y and X with your variables to obtain your units. In this case the slope represents the change in vigilance percentage per additional visitor per day.</span></p>
+</section>
+</section>
+<section id="q6.-write-the-biological-meaning-of-the-slope-as-a-sentence." class="level2">
+<h2 class="anchored" data-anchor-id="q6.-write-the-biological-meaning-of-the-slope-as-a-sentence.">Q6. Write the biological meaning of the slope as a sentence.</h2>
+<section id="section-7" class="level3">
+<h3 class="anchored" data-anchor-id="section-7"></h3>
+<p><span style="color:gray; font-size:0.9em">Possible answer: For every extra visitor that enters to the reserve, animals increase 0.077 % their vigilant behavior.</span></p>
+</section>
+</section>
+<section id="q7.-what-does-the-p-value-tell-us" class="level2">
+<h2 class="anchored" data-anchor-id="q7.-what-does-the-p-value-tell-us">Q7. What does the p-value tell us?</h2>
+<section id="section-8" class="level3">
+<h3 class="anchored" data-anchor-id="section-8"></h3>
+<p><span style="color:gray; font-size:0.9em">The p-value tells us whether there is enough evidence to support the existence of a linear association between the two variables. In this case, the p-value suggests that there is a statistically significant linear relationship between visitor numbers and vigilance behaviour. In short: Evidence of association.</span></p>
+<p><span style="color:gray; font-size:0.9em">Note that The <code>summary()</code> output contains multiple p-values. For this practical, focus mainly on the p-value associated with the predictor variable (<code>Visitors_per_day</code>), because this tells us whether there is evidence of a linear association between the two variables. If you are curious, the intercept p-value tests whether the intercept differs from zero, while the p-value associated with the F-statistic tests whether the overall model explains significant variation. In simple linear regression, the slope p-value and the model p-value are usually identical.</span></p>
+</section>
+</section>
+<section id="q8.-what-does-the-r²-value-tell-us" class="level2">
+<h2 class="anchored" data-anchor-id="q8.-what-does-the-r²-value-tell-us">Q8. What does the R² value tell us?</h2>
+<section id="section-9" class="level3">
+<h3 class="anchored" data-anchor-id="section-9"></h3>
+<p><span style="color:gray; font-size:0.9em">The R² value tells us how much variation in vigilance behaviour is explained by visitor numbers. In short: explanatory power. Do you remember how this is calculated?</span></p>
+</section>
+</section>
+</section>
+<section id="complete-this-table" class="level1">
+<h1>Complete this table</h1>
+<section id="which-value-helps-answer-these-questions" class="level2">
+<h2 class="anchored" data-anchor-id="which-value-helps-answer-these-questions">Which value helps answer these questions?</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Question</th>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: center;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Does X change with Y?</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">By how much?</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Is the effect strong?</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Can we trust the prediction?</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p><span style="color:gray; font-size:0.9em">Answer: p-value, slope, R². The final one is more complex. A good answer for which parameter “Can we trust the prediction?”, would be: R², graph and biological knowledge.</span></p>
+</section>
+</section>
+<section id="make-a-prediction" class="level1">
+<h1>Make a prediction</h1>
+<p>Models are made to be used. Use the model to predict vigilance behaviour at a reserve receiving 250 visitors/day. Take a look at the structure that we use to do it.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(model1, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">Visitors_per_day =</span> <span class="dv">200</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      1 
+26.8595 </code></pre>
+</div>
+</div>
+</section>
+<section id="questions-2" class="level1">
+<h1>Questions</h1>
+<section id="q9.-how-much-would-the-animals-vigilant-behaviour-increase-if-a-reserve-is-receiving-500-visitorsday" class="level2">
+<h2 class="anchored" data-anchor-id="q9.-how-much-would-the-animals-vigilant-behaviour-increase-if-a-reserve-is-receiving-500-visitorsday">Q9. How much would the animals’ vigilant behaviour increase if a reserve is receiving 500 visitors/day?</h2>
+<section id="section-10" class="level3">
+<h3 class="anchored" data-anchor-id="section-10"></h3>
+<p><span style="color:gray; font-size:0.9em">Hint: Change the code above to take 500 instead of 250.</span></p>
+</section>
+</section>
+<section id="q10.-if-we-knew-that-the-average-of-vigilant-behaviour-in-animals-is-around-25-i.e.-they-spend-a-quarter-of-their-time-scanning-the-environment-how-many-visitors-can-a-reserve-can-take-without-trespassing-that-threshold" class="level2">
+<h2 class="anchored" data-anchor-id="q10.-if-we-knew-that-the-average-of-vigilant-behaviour-in-animals-is-around-25-i.e.-they-spend-a-quarter-of-their-time-scanning-the-environment-how-many-visitors-can-a-reserve-can-take-without-trespassing-that-threshold">Q10. If we knew that the average of vigilant behaviour in animals is around 25% (i.e.&nbsp;they spend a quarter of their time scanning the environment), How many visitors can a reserve can take without trespassing that threshold?</h2>
+<section id="section-11" class="level3">
+<h3 class="anchored" data-anchor-id="section-11"></h3>
+<p><span style="color:gray; font-size:0.9em">Hint: There are different approaches here, since this is a reverse prediction question: the model usually predicts vigilance from visitors, but here you are given a vigilance threshold and asked to find the number of visitors. One possible way would be to start from the equation of the line and rearrange it to solve for <code>x</code>. Al alternative way would be to keep trying values in the function above until you find the visitors value that returns 25.</span></p>
+</section>
+</section>
+<section id="q11.-would-you-trust-this-model-to-make-management-decisions-about-tourism-in-wildlife-reserves" class="level2">
+<h2 class="anchored" data-anchor-id="q11.-would-you-trust-this-model-to-make-management-decisions-about-tourism-in-wildlife-reserves">Q11. Would you trust this model to make management decisions about tourism in wildlife reserves?</h2>
+<section id="section-12" class="level3">
+<h3 class="anchored" data-anchor-id="section-12"></h3>
+<p><span style="color:gray; font-size:0.9em">Hint. There is no statistical truth here. Think about: variability, R², realism. If you think “Absolutely yes” consider: If a reserve is having around 500 visitors per day, are you certain that we have proof enough to demonstrate that the increase in vigilant percentage will be the same as predicted by our model? (response: no, that value is actually out of our modelled interval)</span></p>
+</section>
+<section id="section-13" class="level3">
+<h3 class="anchored" data-anchor-id="section-13"></h3>
+</section>
+</section>
+</section>
+<section id="step-3---bad-predictions" class="level1">
+<h1>STEP 3 - BAD PREDICTIONS</h1>
+<p>Not all statistically significant relationships are biologically useful. Scientists must critically evaluate models before making conclusions or conservation decisions.</p>
+</section>
+<section id="example-a---significant-but-weak-relationship" class="level1">
+<h1>Example A - Significant but weak relationship</h1>
+<section id="visitors-vs-feeding-time" class="level2">
+<h2 class="anchored" data-anchor-id="visitors-vs-feeding-time">Visitors vs feeding time</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wildlife,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> Visitors_per_day,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Feeding_time_min)) <span class="sc">+</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">colour =</span> <span class="st">"forestgreen"</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"🍽️ Feeding time vs human visitors"</span>,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Visitors per day"</span>,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Feeding time (min/hour)"</span>) <span class="sc">+</span>   <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="PredictHumanImpact_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wildlife,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> Visitors_per_day,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Feeding_time_min)) <span class="sc">+</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">colour =</span> <span class="st">"forestgreen"</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">se =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">colour =</span> <span class="st">"darkgreen"</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill =</span> <span class="st">"palegreen2"</span>) <span class="sc">+</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"🍽️ Feeding time vs human visitors"</span>,</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Visitors per day"</span>,</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Feeding time (min/hour)"</span>) <span class="sc">+</span> <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="PredictHumanImpact_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>model2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Feeding_time_min <span class="sc">~</span> Visitors_per_day,<span class="at">data =</span> wildlife) </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Feeding_time_min ~ Visitors_per_day, data = wildlife)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-10.4645  -4.8238  -0.3097   2.3115  16.9047 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)      57.03702    1.90769  29.899  &lt; 2e-16 ***
+Visitors_per_day -0.03503    0.01060  -3.305  0.00184 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 6.111 on 46 degrees of freedom
+Multiple R-squared:  0.1919,    Adjusted R-squared:  0.1744 
+F-statistic: 10.93 on 1 and 46 DF,  p-value: 0.001844</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="questions-3" class="level1">
+<h1>Questions</h1>
+<section id="q12.-is-the-relationship-statistically-significant" class="level2">
+<h2 class="anchored" data-anchor-id="q12.-is-the-relationship-statistically-significant">Q12. Is the relationship statistically significant?</h2>
+<section id="section-14" class="level3">
+<h3 class="anchored" data-anchor-id="section-14"></h3>
+</section>
+</section>
+<section id="q13.-does-the-graph-suggest-strong-predictive-power" class="level2">
+<h2 class="anchored" data-anchor-id="q13.-does-the-graph-suggest-strong-predictive-power">Q13. Does the graph suggest strong predictive power?</h2>
+<section id="section-15" class="level3">
+<h3 class="anchored" data-anchor-id="section-15"></h3>
+<p><span style="color:gray; font-size:0.9em">Look carefully at how scattered the points are. Even if the relationship is significant, the model may not predict feeding time very well because the data are highly variable.</span></p>
+</section>
+</section>
+<section id="q14.-why-can-statistically-significant-relationships-still-produce-poor-predictions" class="level2">
+<h2 class="anchored" data-anchor-id="q14.-why-can-statistically-significant-relationships-still-produce-poor-predictions">Q14. Why can statistically significant relationships still produce poor predictions?</h2>
+<section id="section-16" class="level3">
+<h3 class="anchored" data-anchor-id="section-16"></h3>
+<p><span style="color:gray; font-size:0.9em">Possible response: A model can detect a real association but still explain only a small proportion of the variation.</span></p>
+</section>
+</section>
+</section>
+<section id="example-b---outlier-driven-relationship" class="level1">
+<h1>Example B - Outlier-driven relationship</h1>
+<section id="noise-vs-cortisol-concentration" class="level2">
+<h2 class="anchored" data-anchor-id="noise-vs-cortisol-concentration">Noise vs cortisol concentration</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wildlife,</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> Noise_level_dB,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Cortisol_ng_ml)) <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">colour =</span> <span class="st">"purple4"</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"🧠 Cortisol levels vs environmental noise"</span>,</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Noise level (dB)"</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Cortisol concentration (ng/ml)"</span>) <span class="sc">+</span>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="PredictHumanImpact_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wildlife,</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> Noise_level_dB,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Cortisol_ng_ml)) <span class="sc">+</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">colour =</span> <span class="st">"purple4"</span>,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">se =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">colour =</span> <span class="st">"darkmagenta"</span>,</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill =</span> <span class="st">"plum2"</span>) <span class="sc">+</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"🧠 Cortisol levels vs environmental noise"</span>,</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Noise level (dB)"</span>,</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Cortisol concentration (ng/ml)"</span>) <span class="sc">+</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="PredictHumanImpact_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>model3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Cortisol_ng_ml <span class="sc">~</span> Noise_level_dB,  <span class="at">data =</span> wildlife)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Cortisol_ng_ml ~ Noise_level_dB, data = wildlife)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-9.8186 -3.2922 -0.6202  1.9091 29.6517 
+
+Coefficients:
+               Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)    -8.48886    4.77292  -1.779 0.081923 .  
+Noise_level_dB  0.31546    0.08353   3.777 0.000455 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 6.775 on 46 degrees of freedom
+Multiple R-squared:  0.2367,    Adjusted R-squared:  0.2201 
+F-statistic: 14.26 on 1 and 46 DF,  p-value: 0.0004548</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="questions-4" class="level1">
+<h1>Questions</h1>
+<section id="q15.-does-one-observation-appear-to-strongly-influence-the-relationship" class="level2">
+<h2 class="anchored" data-anchor-id="q15.-does-one-observation-appear-to-strongly-influence-the-relationship">Q15. Does one observation appear to strongly influence the relationship?</h2>
+<section id="section-17" class="level3">
+<h3 class="anchored" data-anchor-id="section-17"></h3>
+</section>
+</section>
+<section id="q16.-why-can-outliers-be-problematic-in-biological-studies" class="level2">
+<h2 class="anchored" data-anchor-id="q16.-why-can-outliers-be-problematic-in-biological-studies">Q16. Why can outliers be problematic in biological studies?</h2>
+<section id="section-18" class="level3">
+<h3 class="anchored" data-anchor-id="section-18"></h3>
+</section>
+</section>
+<section id="reflection.-should-scientists-automatically-remove-outliers" class="level2">
+<h2 class="anchored" data-anchor-id="reflection.-should-scientists-automatically-remove-outliers">Reflection. Should scientists automatically remove outliers?</h2>
+<section id="section-19" class="level3">
+<h3 class="anchored" data-anchor-id="section-19"></h3>
+<p><span style="color:gray; font-size:0.9em">Possible discussion points: Sometimes outliers are measurement errors, sometimes they represent real biology, scientists must justify removing data.</span></p>
+</section>
+</section>
+</section>
+<section id="example-c---curved-relationship" class="level1">
+<h1>Example C - Curved relationship</h1>
+<section id="distance-to-road-vs-vigilance" class="level2">
+<h2 class="anchored" data-anchor-id="distance-to-road-vs-vigilance">Distance to road vs vigilance</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wildlife,</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> Distance_to_road_km,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Vigilance_percent)) <span class="sc">+</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">colour =</span> <span class="st">"steelblue4"</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"🚗 Vigilance behaviour vs distance to roads"</span>,</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Distance to nearest road (km)"</span>,</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Vigilance behaviour (%)"</span>) <span class="sc">+</span> <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="PredictHumanImpact_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wildlife,</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> Distance_to_road_km,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> Vigilance_percent)) <span class="sc">+</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">colour =</span> <span class="st">"steelblue4"</span>,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>,</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">se =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">colour =</span> <span class="st">"navy"</span>,</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill =</span> <span class="st">"lightblue"</span>) <span class="sc">+</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"🚗 Vigilance behaviour vs distance to roads"</span>,</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Distance to nearest road (km)"</span>,</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Vigilance behaviour (%)"</span>) <span class="sc">+</span>   <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="PredictHumanImpact_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>model4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Vigilance_percent <span class="sc">~</span> Distance_to_road_km,  <span class="at">data =</span> wildlife)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model4)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Vigilance_percent ~ Distance_to_road_km, data = wildlife)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-5.3572 -2.5899 -0.2509  1.4502 13.7180 
+
+Coefficients:
+                    Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)         33.47929    0.97338   34.40  &lt; 2e-16 ***
+Distance_to_road_km -0.98006    0.07855  -12.48 2.28e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 4.034 on 46 degrees of freedom
+Multiple R-squared:  0.7719,    Adjusted R-squared:  0.767 
+F-statistic: 155.7 on 1 and 46 DF,  p-value: 2.277e-16</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="questions-5" class="level1">
+<h1>Questions</h1>
+<section id="q17.-does-a-straight-line-model-seem-appropriate-here" class="level2">
+<h2 class="anchored" data-anchor-id="q17.-does-a-straight-line-model-seem-appropriate-here">Q17. Does a straight-line model seem appropriate here?</h2>
+<section id="section-20" class="level3">
+<h3 class="anchored" data-anchor-id="section-20"></h3>
+</section>
+</section>
+<section id="q18.-why-might-biological-relationships-be-nonlinear" class="level2">
+<h2 class="anchored" data-anchor-id="q18.-why-might-biological-relationships-be-nonlinear">Q18. Why might biological relationships be nonlinear?</h2>
+<section id="section-21" class="level3">
+<h3 class="anchored" data-anchor-id="section-21"></h3>
+<p><span style="color:gray; font-size:0.9em">Possible response: Biological systems are often complex and may involve thresholds, saturation effects, or multiple interacting factors.</span></p>
+</section>
+</section>
+</section>
+<section id="example-d---no-relationship" class="level1">
+<h1>Example D - No relationship</h1>
+<section id="distance-to-road-vs-feeding-time" class="level2">
+<h2 class="anchored" data-anchor-id="distance-to-road-vs-feeding-time">Distance to road vs feeding time</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wildlife, <span class="fu">aes</span>(<span class="at">x =</span> Distance_to_road_km, <span class="at">y =</span> Feeding_time_min)) <span class="sc">+</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">colour =</span> <span class="st">"darkcyan"</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"🌿 Feeding time vs distance to roads"</span>,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Distance to nearest road (km)"</span>,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Feeding time (min/hour)"</span>) <span class="sc">+</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="PredictHumanImpact_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wildlife, <span class="fu">aes</span>(<span class="at">x =</span> Distance_to_road_km, <span class="at">y =</span> Feeding_time_min)) <span class="sc">+</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">colour =</span> <span class="st">"darkcyan"</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">colour =</span> <span class="st">"cyan4"</span>, <span class="at">fill =</span> <span class="st">"paleturquoise"</span>) <span class="sc">+</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"🌿 Feeding time vs distance to roads"</span>,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Distance to nearest road (km)"</span>,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Feeding time (min/hour)"</span>) <span class="sc">+</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="PredictHumanImpact_files/figure-html/unnamed-chunk-10-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>model4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Feeding_time_min <span class="sc">~</span> Distance_to_road_km, <span class="at">data =</span> wildlife)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model4)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Feeding_time_min ~ Distance_to_road_km, data = wildlife)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-13.3573  -3.7872  -0.9553   2.8838  19.0961 
+
+Coefficients:
+                    Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)          49.6285     1.6060  30.901   &lt;2e-16 ***
+Distance_to_road_km   0.1830     0.1296   1.412    0.165    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 6.655 on 46 degrees of freedom
+Multiple R-squared:  0.04154,   Adjusted R-squared:  0.02071 
+F-statistic: 1.994 on 1 and 46 DF,  p-value: 0.1647</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="questions-6" class="level1">
+<h1>Questions</h1>
+<section id="q19.-is-there-evidence-of-a-relationship" class="level2">
+<h2 class="anchored" data-anchor-id="q19.-is-there-evidence-of-a-relationship">Q19. Is there evidence of a relationship?</h2>
+<section id="section-22" class="level3">
+<h3 class="anchored" data-anchor-id="section-22"></h3>
+</section>
+</section>
+<section id="q20.-would-this-model-be-useful-for-prediction" class="level2">
+<h2 class="anchored" data-anchor-id="q20.-would-this-model-be-useful-for-prediction">Q20. Would this model be useful for prediction?</h2>
+<section id="section-23" class="level3">
+<h3 class="anchored" data-anchor-id="section-23"></h3>
+<p><span style="color:gray; font-size:0.9em">Reflection. Why is “no relationship” still scientifically useful? Knowing that a variable does not explain behaviour helps scientists eliminate hypotheses and improve future studies.</span></p>
+</section>
+<section id="section-24" class="level3">
+<h3 class="anchored" data-anchor-id="section-24"></h3>
+</section>
+</section>
+</section>
+<section id="step-4---the-final-challenge---your-turn" class="level1">
+<h1>STEP 4 - THE FINAL CHALLENGE - Your Turn</h1>
+<p>You now have access to multiple variables describing:</p>
+<ul>
+<li><p>human disturbance,</p></li>
+<li><p>environmental conditions,</p></li>
+<li><p>and animal behaviour.</p></li>
+</ul>
+<p>Your challenge is to investigate your own biological question.</p>
+</section>
+<section id="available-predictors" class="level1">
+<h1>Available predictors</h1>
+<p>Choose ONE:</p>
+<ul>
+<li><p>Visitors_per_day</p></li>
+<li><p>Noise_level_dB</p></li>
+<li><p>Distance_to_road_km</p></li>
+</ul>
+</section>
+<section id="available-response-variables" class="level1">
+<h1>Available response variables</h1>
+<p>Choose ONE:</p>
+<ul>
+<li><p>Vigilance_percent</p></li>
+<li><p>Feeding_time_min</p></li>
+<li><p>Cortisol_ng_ml</p></li>
+</ul>
+</section>
+<section id="your-task" class="level1">
+<h1>Your task:</h1>
+<section id="write-your-biological-question" class="level2">
+<h2 class="anchored" data-anchor-id="write-your-biological-question">1. Write your biological question</h2>
+<p>Can _____ predict ____?</p>
+<section id="section-25" class="level3">
+<h3 class="anchored" data-anchor-id="section-25"></h3>
+</section>
+</section>
+<section id="make-a-prediction-before-fitting-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="make-a-prediction-before-fitting-the-model">2. Make a prediction BEFORE fitting the model</h2>
+<p>I predict that…</p>
+<section id="section-26" class="level3">
+<h3 class="anchored" data-anchor-id="section-26"></h3>
+</section>
+</section>
+<section id="adapt-the-code" class="level2">
+<h2 class="anchored" data-anchor-id="adapt-the-code">3. Adapt the code</h2>
+<p>Take one of the models we build above and replace the variable names with your chosen variables.</p>
+</section>
+</section>
+<section id="visualise-your-model" class="level1">
+<h1>Visualise your model</h1>
+<p>Take one of the code for the plots we used above and replace the variable names with your chosen variables.</p>
+</section>
+<section id="questions-7" class="level1">
+<h1>Questions</h1>
+<section id="q21.-is-the-relationship-positive-or-negative" class="level2">
+<h2 class="anchored" data-anchor-id="q21.-is-the-relationship-positive-or-negative">Q21. Is the relationship positive or negative?</h2>
+<section id="section-27" class="level3">
+<h3 class="anchored" data-anchor-id="section-27"></h3>
+</section>
+</section>
+<section id="q22.-is-the-relationship-statistically-significant" class="level2">
+<h2 class="anchored" data-anchor-id="q22.-is-the-relationship-statistically-significant">Q22. Is the relationship statistically significant?</h2>
+<section id="section-28" class="level3">
+<h3 class="anchored" data-anchor-id="section-28"></h3>
+</section>
+</section>
+<section id="q23.-does-the-model-explain-a-large-proportion-of-the-variation" class="level2">
+<h2 class="anchored" data-anchor-id="q23.-does-the-model-explain-a-large-proportion-of-the-variation">Q23. Does the model explain a large proportion of the variation?</h2>
+<section id="section-29" class="level3">
+<h3 class="anchored" data-anchor-id="section-29"></h3>
+</section>
+</section>
+<section id="q24.-would-you-trust-this-model-for-biological-prediction" class="level2">
+<h2 class="anchored" data-anchor-id="q24.-would-you-trust-this-model-for-biological-prediction">Q24. Would you trust this model for biological prediction?</h2>
+<section id="section-30" class="level3">
+<h3 class="anchored" data-anchor-id="section-30"></h3>
+<p><span style="color:gray; font-size:0.9em">Think about: scatter, R², outliers, biological realism</span></p>
+</section>
+</section>
+<section id="q25.-write-your-conclusion-as-scientific-sentences.-add-much-detail-as-possible-including-the-consequences-of-this-discovery-for-management-and-how-your-result-has-to-be-carefully-taken-and-extract-potentially-relevant-numbers-from-the-model." class="level2">
+<h2 class="anchored" data-anchor-id="q25.-write-your-conclusion-as-scientific-sentences.-add-much-detail-as-possible-including-the-consequences-of-this-discovery-for-management-and-how-your-result-has-to-be-carefully-taken-and-extract-potentially-relevant-numbers-from-the-model.">Q25. Write your conclusion as scientific sentences. Add much detail as possible, including the consequences of this discovery for management and how your result has to be carefully taken, and extract potentially relevant numbers from the model.</h2>
+<section id="section-31" class="level3">
+<h3 class="anchored" data-anchor-id="section-31"></h3>
+</section>
+</section>
+</section>
+<section id="final-reflection" class="level1">
+<h1>FINAL REFLECTION</h1>
+<p>Throughout this year you have learned how scientists: compare groups, test hypotheses, quantify variation, and now build predictive models.</p>
+<p>Today, you used biological data to investigate how animals respond to human activity, and used a model to make predictions about the natural world. Today we explored one predictor at a time. But in real ecosystems, many variables affect behaviour simultaneously. All of the tested variables may influence animal behaviour together.</p>
+<p>Next year, you will learn how to analyse multiple predictors simultaneously, but do not forget the foundations of good science: form expectations, visualise the data, question the model, and always interpret the results biologically. Statistics is not about memorising equations, it is about <strong>understanding biological variation</strong>.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

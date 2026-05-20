@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Erola Fenollosa">
+
+<title>Your first ANOVA</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Your first ANOVA_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Your first ANOVA_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="Your first ANOVA_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="Your first ANOVA_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="Your first ANOVA_files/libs/quarto-html/popper.min.js"></script>
+<script src="Your first ANOVA_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Your first ANOVA_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Your first ANOVA_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Your first ANOVA_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Your first ANOVA_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Your first ANOVA_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Your first ANOVA_files/libs/bootstrap/bootstrap-9e3ffae467580fdb927a41352e75a2e0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Your first ANOVA</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Erola Fenollosa </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="your-first-anova-in-r" class="level1">
+<h1>Your first ANOVA in R</h1>
+<p><strong>Aim</strong></p>
+<p>This practical is designed to help you assimilate the basic ideas of ANOVA and learn the main R functions used to carry out and interpret an ANOVA.</p>
+<p>The practical follows the same logic as the lecture: we start from a research question, explore the data graphically, check the assumptions, fit the model, and then interpret the results in terms of both statistical significance and biological meaning.</p>
+<p><strong>After finishing,</strong> you will be ready to understand scientific articles that have used this analysis. I have prepared <a href="https://unioxfordnexus-my.sharepoint.com/:f:/g/personal/zool2620_ox_ac_uk/IgDGbjLHvzwaTaDz79YHeTgVAY-rvfXZzR33dwAH2BxMJhA?e=XL0Tc9">a folder</a> with articles you are ready to understand now. <a href="https://unioxfordnexus-my.sharepoint.com/:f:/g/personal/zool2620_ox_ac_uk/IgDGbjLHvzwaTaDz79YHeTgVAY-rvfXZzR33dwAH2BxMJhA?e=XL0Tc9"><strong>Pick one</strong> of them</a> and try to understand what they did and how the ANOVA results are visualized.</p>
+<hr>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">1. Introduction</h2>
+<p>In this practical, we will use <strong>analysis of variance</strong> to test whether the mean of a quantitative response differs among <strong>more than two groups</strong>. ANOVA is especially useful in designed experiments, where the explanatory variable is categorical and the response variable is continuous.</p>
+<p>Before going to the data, this time, I am asking you something different.</p>
+<div class="line-block">I put the structure, you <strong>fill it with your idea</strong>.</div>
+<p>I will expand this in the section “Research question”</p>
+<hr>
+</section>
+<section id="learning-outcomes" class="level2">
+<h2 class="anchored" data-anchor-id="learning-outcomes">2. Learning outcomes</h2>
+<p>By the end of this practical, students should be able to:</p>
+<ul>
+<li>identify when ANOVA is the appropriate test,</li>
+<li>formulate a simple research question and hypotheses,</li>
+<li>prepare the data for analysis in R,</li>
+<li>check the main ANOVA assumptions,</li>
+<li>run a one-way ANOVA using <code>aov()</code>,</li>
+<li>interpret the ANOVA table with <code>summary()</code>,</li>
+<li>perform post hoc comparisons using <code>TukeyHSD()</code>,</li>
+<li>distinguish between statistical significance and biological importance.</li>
+</ul>
+<hr>
+</section>
+<section id="research-question" class="level2">
+<h2 class="anchored" data-anchor-id="research-question">3. Research question</h2>
+<p>For this practical, you will be providing the biological context. After listening to the lecture, you know that ANOVA, and specifically a one-way ANOVA, is a statistical tool we use to understand the effects of a grouping variable on a continuous variable. Having that in mind, this time I am asking you to come up with a “grouping variable” (<strong>with four levels</strong>) and a “continuous data”.</p>
+<p>In case you want some inspiration, you can choose one of these cases, but I would strongly encourage to come up with your own example:</p>
+<ol type="1">
+<li>In a plant ecology experiment, we want to test whether fertilizer treatment (Control, Low nitrogen, Medium nitrogen, High nitrogen) affects plant height (cm).</li>
+<li>In an animal behaviour experiment, we want to test whether light exposure treatment (Dark, Low light, Medium light, High light) affects activity level (minutes moving per hour).</li>
+<li>In a microbiology experiment, we want to test whether antibiotic concentration (0, 5, 10, 20 mg/L) affects bacterial growth rate (OD600).</li>
+<li>In a marine biology experiment, we want to test whether water temperature treatment (10°C, 15°C, 20°C, 25°C) affects fish respiration rate (oxygen consumption per minute)</li>
+<li>In a human physiology experiment, we want to test whether exercise intensity (Resting, Low, Moderate, High) affects heart rate (beats per minute).</li>
+<li>In a conservation biology experiment, we want to test whether habitat type (Forest, Grassland, Agricultural land, Urban area) affects bird abundance.</li>
+<li>In an entomology experiment, we want to test whether pesticide treatment (Control, Treatment 1, Treatment 2, Treatment 3) affects insect survival time (days).</li>
+<li>In a molecular biology experiment, we want to test whether gene knockout treatment (Wild type, KO1, KO2, KO3) affects gene expression level.</li>
+<li>In a physiology and climate change experiment, we want to test whether CO₂ treatment (Ambient, Elevated 1, Elevated 2, Elevated 3) affects photosynthetic rate.</li>
+<li>In an evolutionary biology experiment, we want to test whether population origin (Island A, Island B, Mainland 1, Mainland 2) affects body size (mm).</li>
+</ol>
+<p>Either if you selected one of the above, or if you come up with your own question, now <strong>fill here the information</strong> about your case:</p>
+<p>Research question:</p>
+<p>Continuous variable (“Response”):</p>
+<p>Grouping variable (“Treatment”):</p>
+<p>Levels of the grouping variable (must be 4):</p>
+<p>Null hypotheses (H0):</p>
+<p>Alternative hypotheses (H1):</p>
+<p><span style="color:gray; font-size:0.9em">HINTs: For example, the research question will be something like “Does the treatment have an effect on the quantitative response variable?”. The “levels” refer to the groups of the grouping variable. For example, if our grouping variable is Country, the levels will be the names of the countries: e.g.&nbsp;four levels: UK, Italy, South Africa, Chile, or we can have different treatments and the levels be: Control, low dose, medium dose, high dose. Remember that in an ANOVA the null hypothesis will be something like “the mean response is the same in all groups”, and the alternative “at least one group mean is different”, so if we are testing diet types on body length, we will say “mean body length does not differ between individuals eating different diet types”, and “At least one diet influenced the mean body length of the individuals”.</span></p>
+<hr>
+</section>
+<section id="create-the-dataset-in-r" class="level2">
+<h2 class="anchored" data-anchor-id="create-the-dataset-in-r">4. Create the dataset in R</h2>
+<p>We will create mock data.</p>
+<blockquote class="blockquote">
+<p>The following code will create a dataset where a “<strong>continuous variable</strong>” was measured across different “<strong>groups</strong>”: “<strong>A, B, C and D</strong>”, using 12 replicates.</p>
+</blockquote>
+<p>Replace the “continuous variable” and “groups”, and “A, B, C and D” in the previous sentence with the ones you have just chosen in point 3 for this exercise.</p>
+<p><span style="color:gray; font-size:0.9em">HINTs: For example: The following code will create a dataset where LIFE EXPECTANCY was measured across different COUNTRIES: Uk, Spain, Chile, South Africa, using 12 replicates</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>mydata <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Treatment =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>), <span class="at">each =</span> <span class="dv">12</span>)),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Response =</span> <span class="fu">c</span>(</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rnorm</span>(<span class="dv">12</span>, <span class="at">mean =</span> <span class="dv">10</span>, <span class="at">sd =</span> <span class="fl">1.0</span>),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rnorm</span>(<span class="dv">12</span>, <span class="at">mean =</span> <span class="dv">11</span>, <span class="at">sd =</span> <span class="fl">1.0</span>),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rnorm</span>(<span class="dv">12</span>, <span class="at">mean =</span> <span class="dv">13</span>, <span class="at">sd =</span> <span class="fl">1.0</span>),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rnorm</span>(<span class="dv">12</span>, <span class="at">mean =</span> <span class="dv">15</span>, <span class="at">sd =</span> <span class="fl">1.0</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mydata)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Treatment  Response
+1         A  9.439524
+2         A  9.769823
+3         A 11.558708
+4         A 10.070508
+5         A 10.129288
+6         A 11.715065</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(mydata)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   48 obs. of  2 variables:
+ $ Treatment: Factor w/ 4 levels "A","B","C","D": 1 1 1 1 1 1 1 1 1 1 ...
+ $ Response : num  9.44 9.77 11.56 10.07 10.13 ...</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mydata)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Treatment    Response     
+ A:12      Min.   : 8.735  
+ B:12      1st Qu.:10.423  
+ C:12      Median :11.788  
+ D:12      Mean   :12.271  
+           3rd Qu.:13.882  
+           Max.   :17.169  </code></pre>
+</div>
+</div>
+</section>
+<section id="explore-the-data-visually" class="level2">
+<h2 class="anchored" data-anchor-id="explore-the-data-visually">5. Explore the data visually</h2>
+<p>Before doing any formal analysis, we should always explore the data first. A boxplot is a very good place to start, because it lets us look at the variation within and between groups. In addition, I highly recommend using <code>jitter</code> to see the data points.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'ggplot2' was built under R version 4.5.3</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mydata, <span class="fu">aes</span>(<span class="at">x =</span> Treatment, <span class="at">y =</span> Response)) <span class="sc">+</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">trim =</span> <span class="cn">FALSE</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">width =</span> <span class="fl">0.15</span>, <span class="at">outlier.shape =</span> <span class="cn">NA</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.08</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean, <span class="at">geom =</span> <span class="st">"point"</span>, <span class="at">shape =</span> <span class="dv">18</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">colour =</span> <span class="st">"black"</span>) <span class="sc">+</span>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Treatment"</span>, <span class="at">y =</span> <span class="st">"Response"</span>, <span class="at">title =</span> <span class="st">"Response by treatment"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Your-first-ANOVA_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Adding some colour</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mydata, <span class="fu">aes</span>(<span class="at">x =</span> Treatment, <span class="at">y =</span> Response, <span class="at">fill =</span> Treatment)) <span class="sc">+</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">trim =</span> <span class="cn">FALSE</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>, <span class="at">colour =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">width =</span> <span class="fl">0.15</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">outlier.shape =</span> <span class="cn">NA</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha =</span> <span class="fl">0.6</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">colour =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.08</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>              <span class="at">alpha =</span> <span class="fl">0.7</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">colour =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">fun =</span> mean,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">geom =</span> <span class="st">"point"</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">shape =</span> <span class="dv">18</span>,</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">size =</span> <span class="dv">4</span>,</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>               <span class="at">colour =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Pastel1"</span>) <span class="sc">+</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Treatment"</span>,</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Response"</span>,</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Response by treatment"</span>) <span class="sc">+</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Your-first-ANOVA_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="questions" class="level3">
+<h3 class="anchored" data-anchor-id="questions">Questions</h3>
+<ol type="1">
+<li>What is “jitter”?</li>
+<li>Edit the x and y labels as well as the title in the plot to fit with your research question, including the measuring units.</li>
+<li>Do the group distributions look similar or different?</li>
+<li>Which group has the highest mean?</li>
+<li>Which groups seem close to each other?</li>
+<li>Do you think the ANOVA will be significant?</li>
+</ol>
+<p><span style="color:gray; font-size:0.9em">Possible answers: They look different, because the centres of the groups are separated. A and B (whatever they are) may overlap more than the other groups. There is a good chance that ANOVA will detect a difference because the group means appear separated in the plot.</span></p>
+<hr>
+</section>
+</section>
+<section id="prepare-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="prepare-the-data">6. Prepare the data</h2>
+<p>The treatment variable should be <strong>a factor</strong>, which it already is in this example. Still, it is good practice to check it and declare it as so.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.factor</span>(mydata<span class="sc">$</span>Treatment)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>If it was not a factor declare it:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>mydata<span class="sc">$</span>Treatment <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(mydata<span class="sc">$</span>Treatment)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Check for missing values:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(mydata))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+<section id="question-for-students" class="level3">
+<h3 class="anchored" data-anchor-id="question-for-students">Question for students</h3>
+<p>Why is it important that the treatment is treated as a factor?</p>
+<p><span style="color:gray; font-size:0.9em">Possible answer: Because ANOVA compares group means across categories. If the variable were treated as numeric, R might interpret it as continuous, which would not match the experimental design. This will be a problem if for example our levels are called “1”. “2”, “3”, “4”.</span></p>
+<hr>
+</section>
+</section>
+<section id="check-anova-assumptions" class="level2">
+<h2 class="anchored" data-anchor-id="check-anova-assumptions">7. Check ANOVA assumptions</h2>
+<p>ANOVA assumes:</p>
+<ol type="1">
+<li>the residuals are approximately normally distributed,</li>
+<li>the variances are similar across groups.</li>
+</ol>
+<section id="fit-the-model-first" class="level3">
+<h3 class="anchored" data-anchor-id="fit-the-model-first">7.1 Fit the model first</h3>
+<p>This is the structure we use to build the anova model. Make sure you understand this structure (it will appear again later)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">aov</span>(Response <span class="sc">~</span> Treatment, <span class="at">data =</span> mydata)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="normality" class="level3">
+<h3 class="anchored" data-anchor-id="normality">7.2 Normality</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod, <span class="at">which =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Your-first-ANOVA_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(<span class="fu">residuals</span>(mod))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  residuals(mod)
+W = 0.98888, p-value = 0.9262</code></pre>
+</div>
+</div>
+</section>
+<section id="homoscedasticity" class="level3">
+<h3 class="anchored" data-anchor-id="homoscedasticity">7.3 Homoscedasticity</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: carData</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">leveneTest</span>(Response <span class="sc">~</span> Treatment, <span class="at">data =</span> mydata)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Levene's Test for Homogeneity of Variance (center = median)
+      Df F value Pr(&gt;F)
+group  3  0.0663 0.9775
+      44               </code></pre>
+</div>
+</div>
+<p>Or use the diagnostic plots from the model:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Your-first-ANOVA_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Your-first-ANOVA_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Your-first-ANOVA_files/figure-html/unnamed-chunk-9-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Your-first-ANOVA_files/figure-html/unnamed-chunk-9-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="questions-for-students" class="level3">
+<h3 class="anchored" data-anchor-id="questions-for-students">Questions for students</h3>
+<ul>
+<li>Do the residuals look approximately normal?</li>
+<li>Do the group variances look similar?</li>
+<li>What do these results mean for the validity of the ANOVA?</li>
+</ul>
+<p><span style="color:gray; font-size:0.9em">Possible answers: The residuals should look reasonably straight on the QQ plot, and the spread of residuals should be similar across groups. If these conditions are roughly met, the ANOVA results are reliable enough for this practical.</span></p>
+<hr>
+</section>
+</section>
+<section id="run-the-one-way-anova" class="level2">
+<h2 class="anchored" data-anchor-id="run-the-one-way-anova">8. Run the one-way ANOVA</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">aov</span>(Response <span class="sc">~</span> Treatment, <span class="at">data =</span> mydata)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+Treatment    3 172.25   57.42    63.2 5.46e-16 ***
+Residuals   44  39.97    0.91                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<section id="what-this-code-does" class="level3">
+<h3 class="anchored" data-anchor-id="what-this-code-does">What this code does</h3>
+<ul>
+<li><code>aov()</code> fits the ANOVA model.</li>
+<li><code>Response ~ Treatment</code> tells R that the response variable is explained by the factor Treatment.</li>
+<li><code>summary()</code> prints the ANOVA table, including sums of squares, degrees of freedom, mean squares, the F-ratio, and the p-value.</li>
+</ul>
+</section>
+<section id="questions-for-students-1" class="level3">
+<h3 class="anchored" data-anchor-id="questions-for-students-1">Questions for students</h3>
+<ol type="1">
+<li>Is the p-value below 0.05?</li>
+<li>What does that mean?</li>
+<li>Does a significant ANOVA tell us which groups are different, or only that there is at least one difference?</li>
+<li>What is the difference between using <code>summary(mod)</code> and just <code>mod</code> ? Run both in your console and compare the outputs.</li>
+<li>Could you calculate by hand the ANOVA table?</li>
+</ol>
+<p><span style="color: gray; font-size: 0.9em;">Possible answers: 1) In this simulated dataset, yes, it should usually be below 0.05. 2) It means that we reject the null hypothesis that all group means are equal. 3) It only tells us that at least one group differs; it does not identify the specific pairs. 4) <code>mod</code> prints the fitted model object and basic information about the model formula and residuals. <code>summary(mod)</code> produces the full ANOVA table, including sums of squares, degrees of freedom, mean squares, the F-ratio, and the p-value. The summary output is what we normally use to interpret the statistical results.5) i strongly encourage you to try at least once. I did it and it deeply helped me understand everything on it.</span></p>
+<hr>
+</section>
+</section>
+<section id="post-hoc-comparisons-also-called-pair-wise-comparisons" class="level2">
+<h2 class="anchored" data-anchor-id="post-hoc-comparisons-also-called-pair-wise-comparisons">9. Post hoc comparisons (also called pair-wise comparisons)</h2>
+<p>If the ANOVA is significant, we can compare groups pairwise with Tukey’s test.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">TukeyHSD</span>(mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = Response ~ Treatment, data = mydata)
+
+$Treatment
+         diff        lwr      upr     p adj
+B-A 0.5942898 -0.4446481 1.633228 0.4302796
+C-A 2.9899856  1.9510477 4.028923 0.0000000
+D-A 4.7243057  3.6853678 5.763244 0.0000000
+C-B 2.3956958  1.3567579 3.434634 0.0000012
+D-B 4.1300159  3.0910780 5.168954 0.0000000
+D-C 1.7343202  0.6953823 2.773258 0.0003203</code></pre>
+</div>
+</div>
+<section id="questions-for-students-2" class="level3">
+<h3 class="anchored" data-anchor-id="questions-for-students-2">Questions for students</h3>
+<ul>
+<li><p>Which groups differ significantly?</p></li>
+<li><p>Are all pairwise comparisons significant, or only some of them?</p></li>
+<li><p>How should we interpret a comparison with p &gt; 0.05?</p></li>
+<li><p>A common way to visualize these results is to use letters for <strong>homogeneous groups</strong>. Assign letters to each group following this rule: start with the smallest means (at the top of the table above). If two groups are <strong>not significantly different</strong>, assign an “a” to both. If they are significantly different, assign an “a” to the smaller one and a “b” to the larger one. Then continue comparing the next groups. If a group shares similarities with two different groups, it can receive <strong>two letters</strong> (for example, “ab”). This means that the group is <strong>not significantly different from groups labelled with “a” nor from groups labelled with “b”</strong>, even if the “a” and “b” groups are significantly different from each other.</p></li>
+</ul>
+<p><span style="color:gray; font-size:0.9em">Possible answers: Usually the biggest differences, such as A vs D and B vs D, are significant. Smaller differences, such as A vs B, may not be significant. A p-value above 0.05 means that pair is not clearly different in this dataset.</span></p>
+<hr>
+</section>
+</section>
+<section id="how-to-interpret-the-anova-table" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-interpret-the-anova-table">10. How to interpret the ANOVA table</h2>
+<p>The ANOVA table partitions the total variation into:</p>
+<ul>
+<li>variation explained by the factor,</li>
+<li>residual variation or error.</li>
+</ul>
+<p>The F-ratio compares the variation explained by the factor with the unexplained variation. If the F-ratio is large enough, we reject the null hypothesis.</p>
+<p>This is the central idea of ANOVA: we are comparing <strong>variation between groups</strong> with <strong>variation within groups</strong>.</p>
+<section id="question-for-students-1" class="level3">
+<h3 class="anchored" data-anchor-id="question-for-students-1">Question for students</h3>
+<p>Why does ANOVA use a ratio of variances instead of comparing means directly?</p>
+<p><span style="color:gray; font-size:0.9em">Possible answer: Because the ratio tells us whether the differences between group means are large relative to the natural spread within groups. If between-group variation is much larger than within-group variation, that suggests a real treatment effect. So, truly, calling it ANOVA is misleading, it is not just observing how the variance changes, but also the means difference and the sample size.</span></p>
+<hr>
+</section>
+</section>
+<section id="important-reflections" class="level2">
+<h2 class="anchored" data-anchor-id="important-reflections">12. Important reflections</h2>
+<p>Write a short conclusion in bullet points, using your “treatment” and “continuous variable” in order to deliver biologically-relevant conclusions.</p>
+<ul>
+<li>Were the ANOVA <strong>assumptions</strong> met?</li>
+<li>Was the ANOVA <strong>significant</strong>?</li>
+<li>Which groups differed in the <strong>post hoc</strong> test?</li>
+<li>What do these results mean in the context of the experiment?</li>
+<li>Why might the observed pattern make sense biologically?</li>
+<li>Why are we not using a <strong>t-test</strong>?</li>
+<li>Why do you think an ANOVA is also called a <strong>linear model</strong>, if we don’t have two continuous variables?</li>
+</ul>
+<p><span style="color:gray; font-size:0.9em">Possible answer: The assumptions appear reasonable. The ANOVA is significant, so treatment affects the response. Tukey’s test shows that the highest treatment differs from the control and lower treatments. This suggests a dose-related effect, which may reflect a stronger biological response at higher treatment levels.We are not using a t-test because we have more than two groups. A t-test only compares two means at a time, while ANOVA can compare all group means simultaneously without increasing the risk of false positives</span>.<span style="color:gray; font-size:0.9em">ANOVA is considered a type of linear model because it describes the response variable as a linear combination of predictors, even when those predictors are categorical</span><span style="color:gray; font-size:0.9em">.</span></p>
+<hr>
+</section>
+<section id="useful-r-code-summary" class="level2">
+<h2 class="anchored" data-anchor-id="useful-r-code-summary">13. Useful R code summary</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the model</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">aov</span>(Response <span class="sc">~</span> Treatment, <span class="at">data =</span> mydata)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect the ANOVA table</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+Treatment    3 172.25   57.42    63.2 5.46e-16 ***
+Residuals   44  39.97    0.91                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Diagnostic plots</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Your-first-ANOVA_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Your-first-ANOVA_files/figure-html/unnamed-chunk-12-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Your-first-ANOVA_files/figure-html/unnamed-chunk-12-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Your-first-ANOVA_files/figure-html/unnamed-chunk-12-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Post hoc comparisons</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">TukeyHSD</span>(mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = Response ~ Treatment, data = mydata)
+
+$Treatment
+         diff        lwr      upr     p adj
+B-A 0.5942898 -0.4446481 1.633228 0.4302796
+C-A 2.9899856  1.9510477 4.028923 0.0000000
+D-A 4.7243057  3.6853678 5.763244 0.0000000
+C-B 2.3956958  1.3567579 3.434634 0.0000012
+D-B 4.1300159  3.0910780 5.168954 0.0000000
+D-C 1.7343202  0.6953823 2.773258 0.0003203</code></pre>
+</div>
+</div>
+<p>For assumption checks:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(<span class="fu">residuals</span>(mod))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  residuals(mod)
+W = 0.98888, p-value = 0.9262</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">leveneTest</span>(Response <span class="sc">~</span> Treatment, <span class="at">data =</span> mydata)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Levene's Test for Homogeneity of Variance (center = median)
+      Df F value Pr(&gt;F)
+group  3  0.0663 0.9775
+      44               </code></pre>
+</div>
+</div>
+<hr>
+</section>
+<section id="last-exercise-now-you-are-ready" class="level2">
+<h2 class="anchored" data-anchor-id="last-exercise-now-you-are-ready">14. Last exercise: Now you are ready!</h2>
+<p>You are ready to understand scientific articles that have used this analysis. I have prepared <a href="https://unioxfordnexus-my.sharepoint.com/:f:/g/personal/zool2620_ox_ac_uk/IgDGbjLHvzwaTaDz79YHeTgVAY-rvfXZzR33dwAH2BxMJhA?e=XL0Tc9">a folder</a> with articles you are ready to understand now. <a href="https://unioxfordnexus-my.sharepoint.com/:f:/g/personal/zool2620_ox_ac_uk/IgDGbjLHvzwaTaDz79YHeTgVAY-rvfXZzR33dwAH2BxMJhA?e=XL0Tc9"><strong>Pick one</strong> of them</a> and try to understand what they did and how the ANOVA results are visualised.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

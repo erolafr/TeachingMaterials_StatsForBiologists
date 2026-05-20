@@ -1,0 +1,342 @@
+---
+title: "Your first ANOVA"
+author: "Erola Fenollosa"
+format: html
+editor: visual
+---
+
+# Your first ANOVA in R
+
+**Aim**
+
+This practical is designed to help you assimilate the basic ideas of ANOVA and learn the main R functions used to carry out and interpret an ANOVA.
+
+The practical follows the same logic as the lecture: we start from a research question, explore the data graphically, check the assumptions, fit the model, and then interpret the results in terms of both statistical significance and biological meaning.
+
+**After finishing,** you will be ready to understand scientific articles that have used this analysis. I have prepared [a folder](https://unioxfordnexus-my.sharepoint.com/:f:/g/personal/zool2620_ox_ac_uk/IgDGbjLHvzwaTaDz79YHeTgVAY-rvfXZzR33dwAH2BxMJhA?e=XL0Tc9) with articles you are ready to understand now. [**Pick one** of them](https://unioxfordnexus-my.sharepoint.com/:f:/g/personal/zool2620_ox_ac_uk/IgDGbjLHvzwaTaDz79YHeTgVAY-rvfXZzR33dwAH2BxMJhA?e=XL0Tc9) and try to understand what they did and how the ANOVA results are visualized.
+
+------------------------------------------------------------------------
+
+## 1. Introduction
+
+In this practical, we will use **analysis of variance** to test whether the mean of a quantitative response differs among **more than two groups**. ANOVA is especially useful in designed experiments, where the explanatory variable is categorical and the response variable is continuous.
+
+Before going to the data, this time, I am asking you something different.
+
+| I put the structure, you **fill it with your idea**.
+
+I will expand this in the section "Research question"
+
+------------------------------------------------------------------------
+
+## 2. Learning outcomes
+
+By the end of this practical, students should be able to:
+
+-   identify when ANOVA is the appropriate test,
+-   formulate a simple research question and hypotheses,
+-   prepare the data for analysis in R,
+-   check the main ANOVA assumptions,
+-   run a one-way ANOVA using `aov()`,
+-   interpret the ANOVA table with `summary()`,
+-   perform post hoc comparisons using `TukeyHSD()`,
+-   distinguish between statistical significance and biological importance.
+
+------------------------------------------------------------------------
+
+## 3. Research question
+
+For this practical, you will be providing the biological context. After listening to the lecture, you know that ANOVA, and specifically a one-way ANOVA, is a statistical tool we use to understand the effects of a grouping variable on a continuous variable. Having that in mind, this time I am asking you to come up with a "grouping variable" (**with four levels**) and a "continuous data".
+
+In case you want some inspiration, you can choose one of these cases, but I would strongly encourage to come up with your own example:
+
+1.  In a plant ecology experiment, we want to test whether fertilizer treatment (Control, Low nitrogen, Medium nitrogen, High nitrogen) affects plant height (cm).
+2.  In an animal behaviour experiment, we want to test whether light exposure treatment (Dark, Low light, Medium light, High light) affects activity level (minutes moving per hour).
+3.  In a microbiology experiment, we want to test whether antibiotic concentration (0, 5, 10, 20 mg/L) affects bacterial growth rate (OD600).
+4.  In a marine biology experiment, we want to test whether water temperature treatment (10°C, 15°C, 20°C, 25°C) affects fish respiration rate (oxygen consumption per minute)
+5.  In a human physiology experiment, we want to test whether exercise intensity (Resting, Low, Moderate, High) affects heart rate (beats per minute).
+6.  In a conservation biology experiment, we want to test whether habitat type (Forest, Grassland, Agricultural land, Urban area) affects bird abundance.
+7.  In an entomology experiment, we want to test whether pesticide treatment (Control, Treatment 1, Treatment 2, Treatment 3) affects insect survival time (days).
+8.  In a molecular biology experiment, we want to test whether gene knockout treatment (Wild type, KO1, KO2, KO3) affects gene expression level.
+9.  In a physiology and climate change experiment, we want to test whether CO₂ treatment (Ambient, Elevated 1, Elevated 2, Elevated 3) affects photosynthetic rate.
+10. In an evolutionary biology experiment, we want to test whether population origin (Island A, Island B, Mainland 1, Mainland 2) affects body size (mm).
+
+Either if you selected one of the above, or if you come up with your own question, now **fill here the information** about your case:
+
+Research question:
+
+Continuous variable ("Response"):
+
+Grouping variable ("Treatment"):
+
+Levels of the grouping variable (must be 4):
+
+Null hypotheses (H0):
+
+Alternative hypotheses (H1):
+
+[HINTs: For example, the research question will be something like "Does the treatment have an effect on the quantitative response variable?". The "levels" refer to the groups of the grouping variable. For example, if our grouping variable is Country, the levels will be the names of the countries: e.g. four levels: UK, Italy, South Africa, Chile, or we can have different treatments and the levels be: Control, low dose, medium dose, high dose. Remember that in an ANOVA the null hypothesis will be something like "the mean response is the same in all groups", and the alternative "at least one group mean is different", so if we are testing diet types on body length, we will say "mean body length does not differ between individuals eating different diet types", and "At least one diet influenced the mean body length of the individuals".]{style="color:gray; font-size:0.9em"}
+
+------------------------------------------------------------------------
+
+## 4. Create the dataset in R
+
+We will create mock data.
+
+> The following code will create a dataset where a "**continuous variable**" was measured across different "**groups**": "**A, B, C and D**", using 12 replicates.
+
+Replace the "continuous variable" and "groups", and "A, B, C and D" in the previous sentence with the ones you have just chosen in point 3 for this exercise.
+
+[HINTs: For example: The following code will create a dataset where LIFE EXPECTANCY was measured across different COUNTRIES: Uk, Spain, Chile, South Africa, using 12 replicates]{style="color:gray; font-size:0.9em"}
+
+```{r}
+set.seed(123)
+
+mydata <- data.frame(
+  Treatment = factor(rep(c("A", "B", "C", "D"), each = 12)),
+  Response = c(
+    rnorm(12, mean = 10, sd = 1.0),
+    rnorm(12, mean = 11, sd = 1.0),
+    rnorm(12, mean = 13, sd = 1.0),
+    rnorm(12, mean = 15, sd = 1.0)
+  )
+)
+
+head(mydata)
+str(mydata)
+summary(mydata)
+```
+
+## 5. Explore the data visually
+
+Before doing any formal analysis, we should always explore the data first. A boxplot is a very good place to start, because it lets us look at the variation within and between groups. In addition, I highly recommend using `jitter` to see the data points.
+
+```{r}
+library(ggplot2)
+
+ggplot(mydata, aes(x = Treatment, y = Response)) +
+  geom_violin(trim = FALSE, alpha = 0.3) +
+  geom_boxplot(width = 0.15, outlier.shape = NA, alpha = 0.5) +
+  geom_jitter(width = 0.08, alpha = 0.7) +
+  stat_summary(fun = mean, geom = "point", shape = 18, size = 3, colour = "black") +  labs(x = "Treatment", y = "Response", title = "Response by treatment")
+
+
+# Adding some colour
+ggplot(mydata, aes(x = Treatment, y = Response, fill = Treatment)) +
+  geom_violin(trim = FALSE, alpha = 0.4, colour = NA) +
+  geom_boxplot(width = 0.15,
+               outlier.shape = NA,
+               alpha = 0.6,
+               colour = "black") +
+  geom_jitter(width = 0.08,
+              alpha = 0.7,
+              colour = "black") +
+  stat_summary(fun = mean,
+               geom = "point",
+               shape = 18,
+               size = 4,
+               colour = "black") +
+  scale_fill_brewer(palette = "Pastel1") +
+  labs(x = "Treatment",
+       y = "Response",
+       title = "Response by treatment") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "none")
+```
+
+### Questions
+
+1.  What is "jitter"?
+2.  Edit the x and y labels as well as the title in the plot to fit with your research question, including the measuring units.
+3.  Do the group distributions look similar or different?
+4.  Which group has the highest mean?
+5.  Which groups seem close to each other?
+6.  Do you think the ANOVA will be significant?
+
+[Possible answers: They look different, because the centres of the groups are separated. A and B (whatever they are) may overlap more than the other groups. There is a good chance that ANOVA will detect a difference because the group means appear separated in the plot.]{style="color:gray; font-size:0.9em"}
+
+------------------------------------------------------------------------
+
+## 6. Prepare the data
+
+The treatment variable should be **a factor**, which it already is in this example. Still, it is good practice to check it and declare it as so.
+
+```{r}
+is.factor(mydata$Treatment)
+```
+
+If it was not a factor declare it:
+
+```{r}
+mydata$Treatment <- as.factor(mydata$Treatment)
+```
+
+Check for missing values:
+
+```{r}
+sum(is.na(mydata))
+```
+
+### Question for students
+
+Why is it important that the treatment is treated as a factor?
+
+[Possible answer: Because ANOVA compares group means across categories. If the variable were treated as numeric, R might interpret it as continuous, which would not match the experimental design. This will be a problem if for example our levels are called "1". "2", "3", "4".]{style="color:gray; font-size:0.9em"}
+
+------------------------------------------------------------------------
+
+## 7. Check ANOVA assumptions
+
+ANOVA assumes:
+
+1.  the residuals are approximately normally distributed,
+2.  the variances are similar across groups.
+
+### 7.1 Fit the model first
+
+This is the structure we use to build the anova model. Make sure you understand this structure (it will appear again later)
+
+```{r}
+mod <- aov(Response ~ Treatment, data = mydata)
+```
+
+### 7.2 Normality
+
+```{r}
+plot(mod, which = 2)
+shapiro.test(residuals(mod))
+```
+
+### 7.3 Homoscedasticity
+
+```{r}
+library(car)
+leveneTest(Response ~ Treatment, data = mydata)
+```
+
+Or use the diagnostic plots from the model:
+
+```{r}
+plot(mod)
+```
+
+### Questions for students
+
+-   Do the residuals look approximately normal?
+-   Do the group variances look similar?
+-   What do these results mean for the validity of the ANOVA?
+
+[Possible answers: The residuals should look reasonably straight on the QQ plot, and the spread of residuals should be similar across groups. If these conditions are roughly met, the ANOVA results are reliable enough for this practical.]{style="color:gray; font-size:0.9em"}
+
+------------------------------------------------------------------------
+
+## 8. Run the one-way ANOVA
+
+```{r}
+mod <- aov(Response ~ Treatment, data = mydata)
+summary(mod)
+```
+
+### What this code does
+
+-   `aov()` fits the ANOVA model.
+-   `Response ~ Treatment` tells R that the response variable is explained by the factor Treatment.
+-   `summary()` prints the ANOVA table, including sums of squares, degrees of freedom, mean squares, the F-ratio, and the p-value.
+
+### Questions for students
+
+1.  Is the p-value below 0.05?
+2.  What does that mean?
+3.  Does a significant ANOVA tell us which groups are different, or only that there is at least one difference?
+4.  What is the difference between using `summary(mod)` and just `mod` ? Run both in your console and compare the outputs.
+5.  Could you calculate by hand the ANOVA table?
+
+[Possible answers: 1) In this simulated dataset, yes, it should usually be below 0.05. 2) It means that we reject the null hypothesis that all group means are equal. 3) It only tells us that at least one group differs; it does not identify the specific pairs. 4) `mod` prints the fitted model object and basic information about the model formula and residuals. `summary(mod)` produces the full ANOVA table, including sums of squares, degrees of freedom, mean squares, the F-ratio, and the p-value. The summary output is what we normally use to interpret the statistical results.5) i strongly encourage you to try at least once. I did it and it deeply helped me understand everything on it.]{style="color: gray; font-size: 0.9em;"}
+
+------------------------------------------------------------------------
+
+## 9. Post hoc comparisons (also called pair-wise comparisons)
+
+If the ANOVA is significant, we can compare groups pairwise with Tukey’s test.
+
+```{r}
+TukeyHSD(mod)
+```
+
+### Questions for students
+
+-   Which groups differ significantly?
+
+-   Are all pairwise comparisons significant, or only some of them?
+
+-   How should we interpret a comparison with p \> 0.05?
+
+-   A common way to visualize these results is to use letters for **homogeneous groups**. Assign letters to each group following this rule: start with the smallest means (at the top of the table above). If two groups are **not significantly different**, assign an “a” to both. If they are significantly different, assign an “a” to the smaller one and a “b” to the larger one. Then continue comparing the next groups. If a group shares similarities with two different groups, it can receive **two letters** (for example, “ab”). This means that the group is **not significantly different from groups labelled with “a” nor from groups labelled with “b”**, even if the “a” and “b” groups are significantly different from each other.
+
+[Possible answers: Usually the biggest differences, such as A vs D and B vs D, are significant. Smaller differences, such as A vs B, may not be significant. A p-value above 0.05 means that pair is not clearly different in this dataset.]{style="color:gray; font-size:0.9em"}
+
+------------------------------------------------------------------------
+
+## 10. How to interpret the ANOVA table
+
+The ANOVA table partitions the total variation into:
+
+-   variation explained by the factor,
+-   residual variation or error.
+
+The F-ratio compares the variation explained by the factor with the unexplained variation. If the F-ratio is large enough, we reject the null hypothesis.
+
+This is the central idea of ANOVA: we are comparing **variation between groups** with **variation within groups**.
+
+### Question for students
+
+Why does ANOVA use a ratio of variances instead of comparing means directly?
+
+[Possible answer: Because the ratio tells us whether the differences between group means are large relative to the natural spread within groups. If between-group variation is much larger than within-group variation, that suggests a real treatment effect. So, truly, calling it ANOVA is misleading, it is not just observing how the variance changes, but also the means difference and the sample size.]{style="color:gray; font-size:0.9em"}
+
+------------------------------------------------------------------------
+
+## 12. Important reflections
+
+Write a short conclusion in bullet points, using your "treatment" and "continuous variable" in order to deliver biologically-relevant conclusions.
+
+-   Were the ANOVA **assumptions** met?
+-   Was the ANOVA **significant**?
+-   Which groups differed in the **post hoc** test?
+-   What do these results mean in the context of the experiment?
+-   Why might the observed pattern make sense biologically?
+-   Why are we not using a **t-test**?
+-   Why do you think an ANOVA is also called a **linear model**, if we don't have two continuous variables?
+
+[Possible answer: The assumptions appear reasonable. The ANOVA is significant, so treatment affects the response. Tukey’s test shows that the highest treatment differs from the control and lower treatments. This suggests a dose-related effect, which may reflect a stronger biological response at higher treatment levels.We are not using a t-test because we have more than two groups. A t-test only compares two means at a time, while ANOVA can compare all group means simultaneously without increasing the risk of false positives]{style="color:gray; font-size:0.9em"}.[ANOVA is considered a type of linear model because it describes the response variable as a linear combination of predictors, even when those predictors are categorical.]{style="color:gray; font-size:0.9em"}
+
+------------------------------------------------------------------------
+
+## 13. Useful R code summary
+
+```{r}
+# Fit the model
+mod <- aov(Response ~ Treatment, data = mydata)
+
+# Inspect the ANOVA table
+summary(mod)
+
+# Diagnostic plots
+plot(mod)
+
+# Post hoc comparisons
+TukeyHSD(mod)
+```
+
+For assumption checks:
+
+```{r}
+shapiro.test(residuals(mod))
+leveneTest(Response ~ Treatment, data = mydata)
+```
+
+------------------------------------------------------------------------
+
+## 14. Last exercise: Now you are ready!
+
+You are ready to understand scientific articles that have used this analysis. I have prepared [a folder](https://unioxfordnexus-my.sharepoint.com/:f:/g/personal/zool2620_ox_ac_uk/IgDGbjLHvzwaTaDz79YHeTgVAY-rvfXZzR33dwAH2BxMJhA?e=XL0Tc9) with articles you are ready to understand now. [**Pick one** of them](https://unioxfordnexus-my.sharepoint.com/:f:/g/personal/zool2620_ox_ac_uk/IgDGbjLHvzwaTaDz79YHeTgVAY-rvfXZzR33dwAH2BxMJhA?e=XL0Tc9) and try to understand what they did and how the ANOVA results are visualised.
