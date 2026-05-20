@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Erola Fenollosa">
+
+<title>3_Probability</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="CatfishDiet_files/libs/clipboard/clipboard.min.js"></script>
+<script src="CatfishDiet_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="CatfishDiet_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="CatfishDiet_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="CatfishDiet_files/libs/quarto-html/popper.min.js"></script>
+<script src="CatfishDiet_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="CatfishDiet_files/libs/quarto-html/anchor.min.js"></script>
+<link href="CatfishDiet_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="CatfishDiet_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="CatfishDiet_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="CatfishDiet_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="CatfishDiet_files/libs/bootstrap/bootstrap-9e3ffae467580fdb927a41352e75a2e0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">3_Probability</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Erola Fenollosa </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="overview-of-this-practical" class="level2">
+<h2 class="anchored" data-anchor-id="overview-of-this-practical">0. Overview of this practical</h2>
+<p>In this practical you will:</p>
+<ul>
+<li><p>Investigate a real biological question: <strong>Is climate change shifting the catfish diet?</strong></p></li>
+<li><p>Learn how probabilities are used to <strong>describe biological data</strong>.</p></li>
+<li><p>Use R to <strong>generate, explore and analyse</strong> diet data.</p></li>
+<li><p>See how <strong>sample size</strong> affects how reliable probability estimates are.</p></li>
+<li><p>Calculate <strong>probabilities</strong> to: describe how often different prey types are eaten, group prey into biologically meaningful categories, Estimate probabilities of repeated events and explore conditional probability, asking whether diet depends on fish size.</p></li>
+<li><p>Interpret a <strong>probability tree</strong> linking catfish size and prey.</p></li>
+<li><p>Reflect on the <strong>practical difficulties of ecological studies</strong>, such as limited sampling, natural variability and environmental differences between lakes.</p></li>
+</ul>
+<p>By the end of the session, you should understand <strong>why probability is important in biology</strong> and how it can be used to study changes in animal diets under climate change.</p>
+</section>
+<section id="is-climate-change-shifting-the-catfish-diet" class="level2">
+<h2 class="anchored" data-anchor-id="is-climate-change-shifting-the-catfish-diet">1. Is climate change shifting the catfish diet?</h2>
+<p>Catfish (<em>Silurus glanis</em>) are among the most adaptable freshwater fish in rivers, lakes and ponds. They are <strong>opportunistic feeders</strong>, consuming a wide variety of prey depending on what is available in their environment. Scientists and anglers alike report that catfish will eat <strong>insects, crustaceans, worms, mollusks and even other fish</strong> in the wild, and may supplement their diet with plant material or carrion when other food is scarce. This flexible diet allows catfish to survive in many habitats and to shift what they eat over time as conditions change.</p>
+<p><img src="https://www.slo-fishing.si/images/Fishing-tips-and-tricks/What-does-catfish-eat-Omnivores.jpg" class="img-fluid"></p>
+<p>Because catfish are <strong>generalist predators and scavengers</strong>, understanding what they currently eat in a particular ecosystem is an essential first step before we can ask whether their diet is changing due to environmental pressures such as <strong>climate change</strong>. In the context of climate change, shifts in water temperature, prey availability, and seasonal patterns can alter how often catfish encounter and consume different types of prey. But to measure change, we must first <strong>describe the baseline diet</strong> (<em>i.e.</em> what catfish are currently eating) and quantify the relative frequencies of different prey types.</p>
+<p>In this practical, we will treat each stomach or feeding observation from a catfish as a <strong>random event</strong> drawn from the population’s diet. By estimating the <em>probabilities</em> of each prey type being eaten under current conditions, we build a statistical description of the catfish’s diet. Later, this framework could be used to compare with future data to assess whether climate change is shifting these dietary probabilities, for example, making some prey like insects more or less likely in the diet over time.</p>
+<p>The first biological task you will tackle in this practical is therefore:</p>
+<blockquote class="blockquote">
+<p><strong>What is the current diet of catfish?</strong> (<em>Specifically: what are the probabilities that a catfish’s stomach contains different preys?)</em></p>
+</blockquote>
+<p>If you want to know more about the catfish diet: (General audience) <a href="https://www.slo-fishing.si/catfish/348-what-does-eat" class="uri">https://www.slo-fishing.si/catfish/348-what-does-eat</a></p>
+<p>If you want to read actual research being done in this regard: (Scientific audience) <a href="https://lifepredator.eu/wp-content/uploads/2023/10/2009_Caroletal_Grwothdiet_Sglanis_Catalanreservois.pdf" class="uri">https://lifepredator.eu/wp-content/uploads/2023/10/2009_Caroletal_Grwothdiet_Sglanis_Catalanreservois.pdf</a> and <a href="https://www.mdpi.com/2410-3888/4/4/58" class="uri">https://www.mdpi.com/2410-3888/4/4/58</a></p>
+</section>
+<section id="data-collection" class="level2">
+<h2 class="anchored" data-anchor-id="data-collection">2. Data “collection”</h2>
+<p>You will “collect” and analyse sample diet data to <strong>estimate the probabilities of different prey items</strong> (<em>e.g.,</em> small fish, insects, crustaceans, worms), and explore how sampling size and variability affect your estimates.</p>
+<p>Note: Imagine we are using an analytically method that is not very sensitive and <strong>we can only measure the dominant aliment found in a catfish stomach.</strong> Therefore, for each fish we collect, we will obtain only one prey value.</p>
+<p>Take a look at the data of all catfish at the lake:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This chunk creates the dataset, make sure you run it before starting coding later on</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>prey_types <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"common carp"</span>,<span class="st">"other fish"</span>, <span class="st">"birds"</span>,  <span class="st">"crayfish"</span>,  <span class="st">"other invertebrates"</span>,  <span class="st">"digested material"</span>,  <span class="st">"plant material"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>prey_probabilities <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.15</span>, <span class="fl">0.25</span>, <span class="fl">0.05</span>, <span class="fl">0.20</span>, <span class="fl">0.15</span>, <span class="fl">0.10</span>, <span class="fl">0.10</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>n_fish <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>catfish_lake <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">fish_id =</span> <span class="dv">1</span><span class="sc">:</span>n_fish,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># body size in cm </span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">size_cm =</span> <span class="fu">round</span>(<span class="fu">runif</span>(n_fish, <span class="at">min =</span> <span class="dv">40</span>, <span class="at">max =</span> <span class="dv">160</span>), <span class="dv">1</span>),</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Dominant prey item found in the stomach</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">prey =</span> <span class="fu">sample</span>(<span class="fu">sample</span>(prey_types,<span class="at">size =</span> n_fish,<span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> prey_probabilities)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(catfish_lake)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  fish_id size_cm                prey
+1       1   115.3 other invertebrates
+2       2    81.2         common carp
+3       3   110.1      plant material
+4       4    87.0          other fish
+5       5   109.3            crayfish
+6       6    68.0      plant material</code></pre>
+</div>
+</div>
+<p>We have:</p>
+<ul>
+<li><p><code>fish_id</code>: this is just the “name” of each specific catfish</p></li>
+<li><p><code>size</code>: The body size of the catfish in cm</p></li>
+<li><p><code>prey:</code> The dominant prey found within the catfish stomach</p></li>
+</ul>
+<section id="question-1-how-many-samples-would-you-suggest-collecting-in-order-to-estimate-the-probabilities-of-each-prey-type-to-be-found-in-a-catfish-stomach-which-aspects-would-you-recommend-considering" class="level3">
+<h3 class="anchored" data-anchor-id="question-1-how-many-samples-would-you-suggest-collecting-in-order-to-estimate-the-probabilities-of-each-prey-type-to-be-found-in-a-catfish-stomach-which-aspects-would-you-recommend-considering"><strong>QUESTION 1:</strong> How many samples would you suggest collecting in order to estimate the probabilities of each prey type to be found in a catfish stomach? Which aspects would you recommend considering?</h3>
+<p><em>ANSWER:</em></p>
+</section>
+<section id="question-2-acording-to-carol-et-al.-2009-the-possible-preys-or-food-categories-to-be-found-are" class="level3">
+<h3 class="anchored" data-anchor-id="question-2-acording-to-carol-et-al.-2009-the-possible-preys-or-food-categories-to-be-found-are"><strong>QUESTION 2:</strong> Acording to Carol et al.&nbsp;(2009), the possible preys or food categories to be found are:</h3>
+<dl>
+<dt>Catfish’s potential preys</dt>
+<dd>
+<p>common carp, other fish, birds, crayfish, other invertebrates, digested material, and plant material</p>
+</dd>
+</dl>
+<p>Should the sample size be smaller or larger if we would expect more food categories?</p>
+<p><em>ANSWER:</em></p>
+</section>
+<section id="question-3-lets-use-statistical-language.-in-this-example-we-need-to-calculate-the-proportion-of-times-that-an-event-occur.-in-this-case-an-event-would-be-a-measure-of-the-dominant-food-category-found-in-a-catfish.-the-outcomes-are-the-catfish-potential-preys-common-carp-other-fish-birds-crayfish-other-invertebrates-digested-material-and-plant-material.-would-you-describe-the-events-to-be-mutually-exclusive-or-non-exclusive-events-are-the-events-independent" class="level3">
+<h3 class="anchored" data-anchor-id="question-3-lets-use-statistical-language.-in-this-example-we-need-to-calculate-the-proportion-of-times-that-an-event-occur.-in-this-case-an-event-would-be-a-measure-of-the-dominant-food-category-found-in-a-catfish.-the-outcomes-are-the-catfish-potential-preys-common-carp-other-fish-birds-crayfish-other-invertebrates-digested-material-and-plant-material.-would-you-describe-the-events-to-be-mutually-exclusive-or-non-exclusive-events-are-the-events-independent"><strong>QUESTION 3:</strong> Let’s use statistical language. In this example we need to calculate the <strong>proportion</strong> of times that an event occur. In this case, an <strong>event</strong> would be a measure of the dominant food category found in a catfish. The <strong>outcomes</strong> are the catfish potential preys (common carp, other fish, birds, crayfish, other invertebrates, digested material, and plant material). Would you describe the events to be <strong>mutually exclusive or non-exclusive</strong> events? Are the events <strong>independent</strong>?</h3>
+<p><em>Note: Have a deep thought about the last question, since we might need more information to provide a fully certain answer. Independence of the events when sampling is a common assumption in biological experiments, do you think is a correct assumption to take?</em></p>
+<p><em>ANSWER:</em></p>
+</section>
+<section id="question-4-lets-collect-some-data.-i-have-prepared-a-function-that-samples-the-population-as-if-you-were-at-a-lake-and-you-had-cached-a-fish-analyse-it-immediately-and-receive-the-result-of-the-dominant-pray-in-its-stomach.-run-this-code-to-define-the-function-and-use-the-following-chunk-to-sample-your-first-catch" class="level3">
+<h3 class="anchored" data-anchor-id="question-4-lets-collect-some-data.-i-have-prepared-a-function-that-samples-the-population-as-if-you-were-at-a-lake-and-you-had-cached-a-fish-analyse-it-immediately-and-receive-the-result-of-the-dominant-pray-in-its-stomach.-run-this-code-to-define-the-function-and-use-the-following-chunk-to-sample-your-first-catch"><strong>QUESTION 4:</strong> Let’s collect some data. I have prepared a function that “samples” the population, as if you were at a lake and you had cached a fish, analyse it immediately and receive the result of the dominant pray in its stomach. Run this code to define the function and use the following chunk to sample your first catch:</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">## ---- define-catch-function ----</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>catch_and_analyze <span class="ot">&lt;-</span> <span class="cf">function</span>(df, <span class="at">n =</span> <span class="dv">5</span>, <span class="at">replace =</span> <span class="cn">FALSE</span>, <span class="at">seed =</span> <span class="cn">NULL</span>, <span class="at">plot =</span> <span class="cn">TRUE</span>) {</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># df: your dataset (catfish_lake)</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># n: number of fish to catch/sample</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># replace: sample with replacement? default FALSE (realistic lake sampling)</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># seed: optional numeric seed for reproducibility</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># plot: whether to draw a barplot of the estimated diet from the catch</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(seed)) <span class="fu">set.seed</span>(seed)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span>(<span class="st">"prey"</span> <span class="sc">%in%</span> <span class="fu">names</span>(df))) <span class="fu">stop</span>(<span class="st">"Dataframe must contain a 'prey' column."</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (n <span class="sc">&lt;=</span> <span class="dv">0</span>) <span class="fu">stop</span>(<span class="st">"n must be &gt; 0"</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (n <span class="sc">&gt;</span> <span class="fu">nrow</span>(df) <span class="sc">&amp;&amp;</span> replace <span class="sc">==</span> <span class="cn">FALSE</span>) {</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">warning</span>(<span class="st">"n is larger than the dataset; sampling with replacement instead."</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    replace <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  sampled_idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">seq_len</span>(<span class="fu">nrow</span>(df)), <span class="at">size =</span> n, <span class="at">replace =</span> replace)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  sampled <span class="ot">&lt;-</span> df[sampled_idx, , drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  prey_counts <span class="ot">&lt;-</span> <span class="fu">table</span>(sampled<span class="sc">$</span>prey)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  prey_props  <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(prey_counts)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># dominant prey (may be more than one if tie)</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  max_count <span class="ot">&lt;-</span> <span class="fu">max</span>(prey_counts)</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>  dominant <span class="ot">&lt;-</span> <span class="fu">names</span>(prey_counts)[prey_counts <span class="sc">==</span> max_count]</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Print summary to console</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Caught %d fish (replace = %s).</span><span class="sc">\n\n</span><span class="st">"</span>, n, <span class="fu">ifelse</span>(replace, <span class="st">"TRUE"</span>, <span class="st">"FALSE"</span>)))</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"Sampled fish (first rows):</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">head</span>(sampled))</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Prey counts:</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(prey_counts)</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Prey proportions:</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">round</span>(prey_props, <span class="dv">3</span>))</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(dominant) <span class="sc">==</span> <span class="dv">1</span>) {</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Dominant prey in this catch: %s (n = %d)</span><span class="sc">\n</span><span class="st">"</span>, dominant, max_count))</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Dominant prey (tie): %s (n = %d)</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">paste</span>(dominant, <span class="at">collapse =</span> <span class="st">", "</span>), max_count))</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (plot) {</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>    old_par <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">no.readonly =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">on.exit</span>(<span class="fu">par</span>(old_par), <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">barplot</span>(prey_props,</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>            <span class="at">main =</span> <span class="fu">sprintf</span>(<span class="st">"Estimated diet from n = %d catch"</span>, n),</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>            <span class="at">ylab =</span> <span class="st">"Proportion"</span>,</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>            <span class="at">las =</span> <span class="dv">2</span>)</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Return a structured result invisibly</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>  result <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">sampled =</span> sampled,</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">counts =</span> <span class="fu">as.integer</span>(prey_counts),</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">counts_names =</span> <span class="fu">names</span>(prey_counts),</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>    <span class="at">proportions =</span> <span class="fu">as.numeric</span>(prey_props),</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">proportions_names =</span> <span class="fu">names</span>(prey_props),</span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">dominant =</span> dominant</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">invisible</span>(result)</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="do">## ---- first-catch ----</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: sample 1 fish from catfish_lake</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>first_catch <span class="ot">&lt;-</span> <span class="fu">catch_and_analyze</span>(catfish_lake, <span class="at">n =</span> <span class="dv">1</span>, <span class="at">replace =</span> <span class="cn">FALSE</span>, <span class="at">plot =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Caught 1 fish (replace = FALSE).
+
+Sampled fish (first rows):
+    fish_id size_cm     prey
+143     143    97.6 crayfish
+
+Prey counts:
+
+crayfish 
+       1 
+
+Prey proportions:
+
+crayfish 
+       1 
+
+Dominant prey in this catch: crayfish (n = 1)</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="CatfishDiet_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="question-5.-now-add-multiple-chunks-here-to-test-how-the-data-changes.-based-on-the-observations-which-sample-size-would-be-adequate-try-at-least-n-3-5-10-50-100" class="level3">
+<h3 class="anchored" data-anchor-id="question-5.-now-add-multiple-chunks-here-to-test-how-the-data-changes.-based-on-the-observations-which-sample-size-would-be-adequate-try-at-least-n-3-5-10-50-100"><strong>QUESTION 5.</strong> Now add multiple chunks here to test how the data changes. Based on the observations, which sample size would be adequate? (Try at least n = 3, 5, 10, 50, 100)</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add more lines here or more chunks to see the results of sampling different number of fishes by editing "n"</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># first_catch &lt;- catch_and_analyze(catfish_lake, n = 1, replace = FALSE, plot = TRUE)</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>first_catch <span class="ot">&lt;-</span> <span class="fu">catch_and_analyze</span>(catfish_lake, <span class="at">n =</span> <span class="dv">3</span>, <span class="at">replace =</span> <span class="cn">FALSE</span>, <span class="at">plot =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Caught 3 fish (replace = FALSE).
+
+Sampled fish (first rows):
+    fish_id size_cm                prey
+42       42   115.5 other invertebrates
+38       38    56.2            crayfish
+162     162    76.6 other invertebrates
+
+Prey counts:
+
+           crayfish other invertebrates 
+                  1                   2 
+
+Prey proportions:
+
+           crayfish other invertebrates 
+              0.333               0.667 
+
+Dominant prey in this catch: other invertebrates (n = 2)</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="CatfishDiet_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add your code here.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="question-6.-functions-to-obtain-probabilities.-we-want-to-explore-which-specific-plants-the-catfish-are-eating-but-we-know-not-all-of-them-eat-plants.-calculate-the-probability-of-sampling-a-fish-that-has-a-plant-in-its-stomach-so-we-can-plan-the-fieldwork-costs." class="level3">
+<h3 class="anchored" data-anchor-id="question-6.-functions-to-obtain-probabilities.-we-want-to-explore-which-specific-plants-the-catfish-are-eating-but-we-know-not-all-of-them-eat-plants.-calculate-the-probability-of-sampling-a-fish-that-has-a-plant-in-its-stomach-so-we-can-plan-the-fieldwork-costs."><strong>QUESTION 6</strong>. Functions to obtain probabilities. We want to explore which specific plants the catfish are eating, but we know not all of them eat plants. Calculate the probability of sampling a fish that has a plant in its stomach so we can plan the fieldwork costs.</h3>
+<p><em>Hint: You can use these functions (just copy and paste it), make sure you understand what they are doing:</em></p>
+<p><em><code>prey_counts &lt;- table(catfish_lake$prey)</code></em> (1)</p>
+<p><em><code>prey_probs &lt;- prop.table(prey_counts)</code></em></p>
+<p><em>After this, you can ask for the probability of each category by using this format: <code>prey_probs["common carp"]</code> and changing the name of the prey. Make sure you type the name of the prey correctly. In addition, could you calculate the probability using the dataset</em> <code>first_catch</code> with n=10 instead of the <em>catfish_lake</em> dataset? (To do so replace <code>catfish_lake$prey</code> in example (1) above, with <code>first_catch$sampled$prey</code>) Do you get similar results?</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add your code here.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="question-7.-in-ecological-studies-researchers-often-group-prey-items-into-functional-categories-rather-than-analysing-every-species-separately.-in-this-case-both-common-carp-and-other-fish-represent-fish-prey-which-are-typically-larger-more-energy-rich-and-harder-to-catch-than-invertebrates-or-plant-material.-in-order-to-understand-the-catfish-role-as-a-top-predator-in-the-food-web-calculate-the-probability-of-fishing-a-catfish-that-has-eaten-another-fish-consider-that-there-are-two-fish-categories-other-fish-and-common-carp." class="level3">
+<h3 class="anchored" data-anchor-id="question-7.-in-ecological-studies-researchers-often-group-prey-items-into-functional-categories-rather-than-analysing-every-species-separately.-in-this-case-both-common-carp-and-other-fish-represent-fish-prey-which-are-typically-larger-more-energy-rich-and-harder-to-catch-than-invertebrates-or-plant-material.-in-order-to-understand-the-catfish-role-as-a-top-predator-in-the-food-web-calculate-the-probability-of-fishing-a-catfish-that-has-eaten-another-fish-consider-that-there-are-two-fish-categories-other-fish-and-common-carp."><strong>QUESTION 7.</strong> In ecological studies, researchers often group prey items into <strong>functional categories</strong> rather than analysing every species separately. In this case, both <code>common carp</code> and <code>other fish</code> represent fish prey, which are typically larger, more energy-rich, and harder to catch than invertebrates or plant material. In order to understand the catfish role as a top predator in the food web, calculate the probability of fishing a catfish that has eaten another fish (consider that there are two fish categories (<code>other fish</code> and <code>common carp</code>).</h3>
+<p><em>Hint: In other words: the probability of catching a fish that has eaten “other fish” OR “common carp”. Sum probabilities considering that they are objects. For example: <code>prey_probs["birds"] + prey_probs["crayfish"]</code> (make sure you understand why this is Additive probability).</em></p>
+<p>NOTE! Use <code>as.numeric()</code> to avoid confusion of the probability name. For example: <code>as.numeric(prey_probs["birds"] + prey_probs["crayfish"])</code></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add your code here.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="question-8.-calculate-1-the-probability-of-fishing-three-fishes-that-have-eaten-plants-assuming-independent-catches-and-2-the-probability-of-fishing-three-fishes-one-has-eaten-plant-material-and-two-have-eaten-digested-material" class="level3">
+<h3 class="anchored" data-anchor-id="question-8.-calculate-1-the-probability-of-fishing-three-fishes-that-have-eaten-plants-assuming-independent-catches-and-2-the-probability-of-fishing-three-fishes-one-has-eaten-plant-material-and-two-have-eaten-digested-material"><strong>QUESTION 8</strong>. Calculate (1) the probability of fishing three fishes that have eaten plants (assuming independent catches), and (2) the probability of fishing three fishes, one has eaten <code>plant material</code> and two have eaten <code>digested material</code></h3>
+<p><em>Hint: This is a probability of repeated events. Make sure you understand why. Sequence of events does not matter here, imagine we have three researchers fishing at the same time.</em></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add your code here.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="question-9.-conditional-probability.-according-to-carol-et-al.-2009-the-developmental-stage-of-catfish-might-affect-their-diet.-is-the-probability-of-eating-crayfish-the-same-for-small-and-large-catfish" class="level3">
+<h3 class="anchored" data-anchor-id="question-9.-conditional-probability.-according-to-carol-et-al.-2009-the-developmental-stage-of-catfish-might-affect-their-diet.-is-the-probability-of-eating-crayfish-the-same-for-small-and-large-catfish"><strong>QUESTION 9.</strong> Conditional probability. According to Carol et al.&nbsp;(2009) the developmental stage of catfish might affect their diet. Is the probability of eating crayfish the same for small and large catfish?</h3>
+<p>First we will create the categories of size based on the catfish sizes</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="do">## ---- create-size-class ----</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>catfish_lake<span class="sc">$</span>size_class <span class="ot">&lt;-</span> <span class="fu">cut</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  catfish_lake<span class="sc">$</span>size_cm,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">50</span>, <span class="dv">110</span>, <span class="cn">Inf</span>),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"small"</span>, <span class="st">"medium"</span>, <span class="st">"large"</span>))</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(catfish_lake<span class="sc">$</span>size_class) <span class="co"># What is this function "table" doing?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ small medium  large 
+    14     84    102 </code></pre>
+</div>
+</div>
+<p>For this exercise I am giving you the code, but I feel at this point you should be able to understand the elements since they are similar to what you have been coding until now. Run this code below and explain in your own words the results.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="do">## ---- probability within a given event ----</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># P(crayfish | large)</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>large_fish <span class="ot">&lt;-</span> catfish_lake<span class="sc">$</span>size_class <span class="sc">==</span> <span class="st">"large"</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(catfish_lake<span class="sc">$</span>prey[large_fish] <span class="sc">==</span> <span class="st">"crayfish"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2254902</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># P(crayfish | small)</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>small_fish <span class="ot">&lt;-</span> catfish_lake<span class="sc">$</span>size_class <span class="sc">==</span> <span class="st">"small"</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(catfish_lake<span class="sc">$</span>prey[small_fish] <span class="sc">==</span> <span class="st">"crayfish"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.07142857</code></pre>
+</div>
+</div>
+<p><em>ANSWER:</em></p>
+</section>
+</section>
+<section id="question-10.-build-a-probability-tree-to-further-discuss-conditional-probabilities.-test-yourself-do-you-understand-the-tree-and-the-numbers-depicted-try-to-calculate-them." class="level2">
+<h2 class="anchored" data-anchor-id="question-10.-build-a-probability-tree-to-further-discuss-conditional-probabilities.-test-yourself-do-you-understand-the-tree-and-the-numbers-depicted-try-to-calculate-them.">QUESTION 10. Build a probability tree to further discuss conditional probabilities. Test yourself: do you understand the tree and the numbers depicted? Try to calculate them.</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># DO not worry about understanding this code</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="do">## ---- size-probabilities ----</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>size_prob <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(<span class="fu">table</span>(catfish_lake<span class="sc">$</span>size_class))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>size_prob</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ small medium  large 
+  0.07   0.42   0.51 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="do">## ---- conditional-prey-probabilities ----</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>prey_given_size <span class="ot">&lt;-</span> <span class="fu">with</span>(</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  catfish_lake,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prop.table</span>(<span class="fu">table</span>(size_class, prey), <span class="at">margin =</span> <span class="dv">1</span>))</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>prey_given_size</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          prey
+size_class      birds common carp   crayfish digested material other fish
+    small  0.00000000  0.21428571 0.07142857        0.07142857 0.42857143
+    medium 0.03571429  0.07142857 0.23809524        0.08333333 0.27380952
+    large  0.03921569  0.15686275 0.22549020        0.12745098 0.27450980
+          prey
+size_class other invertebrates plant material
+    small           0.07142857     0.14285714
+    medium          0.23809524     0.05952381
+    large           0.10784314     0.06862745</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="do">## ---- joint-probabilities ----</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>prob_tree <span class="ot">&lt;-</span> <span class="fu">sweep</span>( prey_given_size,  <span class="dv">1</span>,  size_prob,  <span class="at">FUN =</span> <span class="st">"*"</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>prob_tree</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          prey
+size_class birds common carp crayfish digested material other fish
+    small  0.000       0.015    0.005             0.005      0.030
+    medium 0.015       0.030    0.100             0.035      0.115
+    large  0.020       0.080    0.115             0.065      0.140
+          prey
+size_class other invertebrates plant material
+    small                0.005          0.010
+    medium               0.100          0.025
+    large                0.055          0.035</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># All joint probabilities should sum to 1</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(prob_tree) <span class="sc">==</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#---- print-tree ----</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (s <span class="cf">in</span> <span class="fu">rownames</span>(prob_tree)) {</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (p <span class="cf">in</span> <span class="fu">colnames</span>(prob_tree)) {</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sprintf</span>(</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"P(%s AND %s) = P(%s) × P(%s | %s) = %.3f</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>        s, p, s, p, s, prob_tree[s, p]</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>P(small AND birds) = P(small) × P(birds | small) = 0.000
+P(small AND common carp) = P(small) × P(common carp | small) = 0.015
+P(small AND crayfish) = P(small) × P(crayfish | small) = 0.005
+P(small AND digested material) = P(small) × P(digested material | small) = 0.005
+P(small AND other fish) = P(small) × P(other fish | small) = 0.030
+P(small AND other invertebrates) = P(small) × P(other invertebrates | small) = 0.005
+P(small AND plant material) = P(small) × P(plant material | small) = 0.010
+
+P(medium AND birds) = P(medium) × P(birds | medium) = 0.015
+P(medium AND common carp) = P(medium) × P(common carp | medium) = 0.030
+P(medium AND crayfish) = P(medium) × P(crayfish | medium) = 0.100
+P(medium AND digested material) = P(medium) × P(digested material | medium) = 0.035
+P(medium AND other fish) = P(medium) × P(other fish | medium) = 0.115
+P(medium AND other invertebrates) = P(medium) × P(other invertebrates | medium) = 0.100
+P(medium AND plant material) = P(medium) × P(plant material | medium) = 0.025
+
+P(large AND birds) = P(large) × P(birds | large) = 0.020
+P(large AND common carp) = P(large) × P(common carp | large) = 0.080
+P(large AND crayfish) = P(large) × P(crayfish | large) = 0.115
+P(large AND digested material) = P(large) × P(digested material | large) = 0.065
+P(large AND other fish) = P(large) × P(other fish | large) = 0.140
+P(large AND other invertebrates) = P(large) × P(other invertebrates | large) = 0.055
+P(large AND plant material) = P(large) × P(plant material | large) = 0.035</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># DO not worry about understanding this code</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>plot_probability_tree <span class="ot">&lt;-</span> <span class="cf">function</span>(df, <span class="at">round_digits =</span> <span class="dv">3</span>,</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">main =</span> <span class="st">"Probability tree: Size → Prey"</span>) {</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">all</span>(<span class="fu">c</span>(<span class="st">"size_class"</span>, <span class="st">"prey"</span>) <span class="sc">%in%</span> <span class="fu">names</span>(df))) {</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"Dataframe must contain columns 'size_class' and 'prey'."</span>) }</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># probabilities</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  size_prob <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(<span class="fu">table</span>(df<span class="sc">$</span>size_class))</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  prey_given_size <span class="ot">&lt;-</span> <span class="fu">with</span>(df, <span class="fu">prop.table</span>(<span class="fu">table</span>(size_class, prey), <span class="at">margin =</span> <span class="dv">1</span>))</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  joint_prob <span class="ot">&lt;-</span> <span class="fu">sweep</span>(prey_given_size, <span class="dv">1</span>, size_prob, <span class="at">FUN =</span> <span class="st">"*"</span>)</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>  sizes <span class="ot">&lt;-</span> <span class="fu">rownames</span>(prey_given_size)</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>  preys <span class="ot">&lt;-</span> <span class="fu">colnames</span>(prey_given_size)</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># layout</span></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>  root_x <span class="ot">&lt;-</span> <span class="fl">0.5</span>; root_y <span class="ot">&lt;-</span> <span class="fl">1.0</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>  size_y <span class="ot">&lt;-</span> <span class="fl">0.65</span></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>  prey_y <span class="ot">&lt;-</span> <span class="fl">0.30</span></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>  size_x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.15</span>, <span class="fl">0.85</span>, <span class="at">length.out =</span> <span class="fu">length</span>(sizes))</span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>  prey_x <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow =</span> <span class="fu">length</span>(sizes), <span class="at">ncol =</span> <span class="fu">length</span>(preys))</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>  cluster_width <span class="ot">&lt;-</span> <span class="fl">0.18</span></span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(sizes)) {</span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>    prey_x[i, ] <span class="ot">&lt;-</span> <span class="fu">seq</span>(size_x[i] <span class="sc">-</span> cluster_width<span class="sc">/</span><span class="dv">2</span>,</span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>                       size_x[i] <span class="sc">+</span> cluster_width<span class="sc">/</span><span class="dv">2</span>,</span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>                       <span class="at">length.out =</span> <span class="fu">length</span>(preys))}</span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>  oldpar <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">no.readonly =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">on.exit</span>(<span class="fu">par</span>(oldpar), <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot.new</span>()</span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot.window</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">title</span>(<span class="at">main =</span> main)</span>
+<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">labels =</span> <span class="cn">FALSE</span>); <span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">labels =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># root</span></span>
+<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">symbols</span>(root_x, root_y, <span class="at">circles =</span> <span class="fl">0.02</span>, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">inches =</span> <span class="cn">FALSE</span>, <span class="at">bg =</span> <span class="st">"white"</span>)</span>
+<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">text</span>(root_x, root_y <span class="sc">+</span> <span class="fl">0.05</span>, <span class="st">"Start"</span>, <span class="at">srt =</span> <span class="dv">90</span>, <span class="at">cex =</span> <span class="fl">0.9</span>)</span>
+<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a>  <span class="co"># size level</span></span>
+<span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(sizes)) {</span>
+<span id="cb28-42"><a href="#cb28-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">symbols</span>(size_x[i], size_y, <span class="at">circles =</span> <span class="fl">0.03</span>, <span class="at">add =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb28-43"><a href="#cb28-43" aria-hidden="true" tabindex="-1"></a>            <span class="at">inches =</span> <span class="cn">FALSE</span>, <span class="at">bg =</span> <span class="st">"lightblue"</span>)</span>
+<span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">text</span>(size_x[i], size_y, sizes[i], <span class="at">srt =</span> <span class="dv">90</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span>
+<span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb28-46"><a href="#cb28-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrows</span>(root_x, root_y <span class="sc">-</span> <span class="fl">0.02</span>, size_x[i], size_y <span class="sc">+</span> <span class="fl">0.03</span>, <span class="at">length =</span> <span class="fl">0.08</span>)</span>
+<span id="cb28-47"><a href="#cb28-47" aria-hidden="true" tabindex="-1"></a>    <span class="fu">text</span>((root_x <span class="sc">+</span> size_x[i])<span class="sc">/</span><span class="dv">2</span>,</span>
+<span id="cb28-48"><a href="#cb28-48" aria-hidden="true" tabindex="-1"></a>         (root_y <span class="sc">+</span> size_y)<span class="sc">/</span><span class="dv">2</span> <span class="sc">+</span> <span class="fl">0.03</span>,</span>
+<span id="cb28-49"><a href="#cb28-49" aria-hidden="true" tabindex="-1"></a>         <span class="fu">paste0</span>(<span class="st">"P="</span>, <span class="fu">round</span>(size_prob[sizes[i]], round_digits)),</span>
+<span id="cb28-50"><a href="#cb28-50" aria-hidden="true" tabindex="-1"></a>         <span class="at">srt =</span> <span class="dv">90</span>, <span class="at">cex =</span> <span class="fl">0.7</span>)</span>
+<span id="cb28-51"><a href="#cb28-51" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb28-52"><a href="#cb28-52" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-53"><a href="#cb28-53" aria-hidden="true" tabindex="-1"></a>  <span class="co"># prey level</span></span>
+<span id="cb28-54"><a href="#cb28-54" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(sizes)) {</span>
+<span id="cb28-55"><a href="#cb28-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> <span class="fu">seq_along</span>(preys)) {</span>
+<span id="cb28-56"><a href="#cb28-56" aria-hidden="true" tabindex="-1"></a>      x_to <span class="ot">&lt;-</span> prey_x[i, j]</span>
+<span id="cb28-57"><a href="#cb28-57" aria-hidden="true" tabindex="-1"></a>      y_to <span class="ot">&lt;-</span> prey_y</span>
+<span id="cb28-58"><a href="#cb28-58" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb28-59"><a href="#cb28-59" aria-hidden="true" tabindex="-1"></a>      <span class="fu">symbols</span>(x_to, y_to, <span class="at">circles =</span> <span class="fl">0.025</span>, <span class="at">add =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb28-60"><a href="#cb28-60" aria-hidden="true" tabindex="-1"></a>              <span class="at">inches =</span> <span class="cn">FALSE</span>, <span class="at">bg =</span> <span class="st">"wheat"</span>)</span>
+<span id="cb28-61"><a href="#cb28-61" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb28-62"><a href="#cb28-62" aria-hidden="true" tabindex="-1"></a>      <span class="fu">text</span>(x_to, y_to <span class="sc">-</span> <span class="fl">0.06</span>, preys[j], <span class="at">srt =</span> <span class="dv">90</span>, <span class="at">cex =</span> <span class="fl">0.65</span>)</span>
+<span id="cb28-63"><a href="#cb28-63" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb28-64"><a href="#cb28-64" aria-hidden="true" tabindex="-1"></a>      <span class="fu">arrows</span>(size_x[i], size_y <span class="sc">-</span> <span class="fl">0.03</span>, x_to, y_to <span class="sc">+</span> <span class="fl">0.025</span>, <span class="at">length =</span> <span class="fl">0.06</span>)</span>
+<span id="cb28-65"><a href="#cb28-65" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb28-66"><a href="#cb28-66" aria-hidden="true" tabindex="-1"></a>      <span class="fu">text</span>((size_x[i] <span class="sc">+</span> x_to)<span class="sc">/</span><span class="dv">2</span>,</span>
+<span id="cb28-67"><a href="#cb28-67" aria-hidden="true" tabindex="-1"></a>           (size_y <span class="sc">+</span> y_to)<span class="sc">/</span><span class="dv">2</span> <span class="sc">-</span> <span class="fl">0.03</span>,</span>
+<span id="cb28-68"><a href="#cb28-68" aria-hidden="true" tabindex="-1"></a>           <span class="fu">paste0</span>(<span class="st">"P="</span>, <span class="fu">round</span>(prey_given_size[sizes[i], preys[j]], round_digits)),</span>
+<span id="cb28-69"><a href="#cb28-69" aria-hidden="true" tabindex="-1"></a>           <span class="at">srt =</span> <span class="dv">90</span>, <span class="at">cex =</span> <span class="fl">0.6</span>)</span>
+<span id="cb28-70"><a href="#cb28-70" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb28-71"><a href="#cb28-71" aria-hidden="true" tabindex="-1"></a>      <span class="fu">text</span>(x_to, y_to <span class="sc">+</span> <span class="fl">0.045</span>,</span>
+<span id="cb28-72"><a href="#cb28-72" aria-hidden="true" tabindex="-1"></a>           <span class="fu">paste0</span>(<span class="st">"P="</span>, <span class="fu">round</span>(joint_prob[sizes[i], preys[j]], round_digits)),</span>
+<span id="cb28-73"><a href="#cb28-73" aria-hidden="true" tabindex="-1"></a>           <span class="at">srt =</span> <span class="dv">90</span>, <span class="at">cex =</span> <span class="fl">0.6</span>)</span>
+<span id="cb28-74"><a href="#cb28-74" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb28-75"><a href="#cb28-75" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb28-76"><a href="#cb28-76" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-77"><a href="#cb28-77" aria-hidden="true" tabindex="-1"></a>  <span class="fu">text</span>(<span class="fl">0.5</span>, <span class="fl">0.02</span>,</span>
+<span id="cb28-78"><a href="#cb28-78" aria-hidden="true" tabindex="-1"></a>       <span class="fu">paste</span>(<span class="st">"Sum of joint probabilities ="</span>,</span>
+<span id="cb28-79"><a href="#cb28-79" aria-hidden="true" tabindex="-1"></a>             <span class="fu">round</span>(<span class="fu">sum</span>(joint_prob), round_digits)),</span>
+<span id="cb28-80"><a href="#cb28-80" aria-hidden="true" tabindex="-1"></a>       <span class="at">srt =</span> <span class="dv">90</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span>
+<span id="cb28-81"><a href="#cb28-81" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-82"><a href="#cb28-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">invisible</span>(<span class="fu">list</span>(</span>
+<span id="cb28-83"><a href="#cb28-83" aria-hidden="true" tabindex="-1"></a>    <span class="at">size_prob =</span> size_prob,</span>
+<span id="cb28-84"><a href="#cb28-84" aria-hidden="true" tabindex="-1"></a>    <span class="at">prey_given_size =</span> prey_given_size,</span>
+<span id="cb28-85"><a href="#cb28-85" aria-hidden="true" tabindex="-1"></a>    <span class="at">joint_prob =</span> joint_prob</span>
+<span id="cb28-86"><a href="#cb28-86" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb28-87"><a href="#cb28-87" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># draw the tree </span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_probability_tree</span>(catfish_lake)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="CatfishDiet_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Note: Sometimes it is convenient to look at the plot in a bigger shape, to zoom in to specific parts of it. To do so, plot it at the “Plots” section of the RStudio top right section by coping the code and run it in the console (below). Coy this code: <code>plot_probability_tree(catfish_lake)</code> and explore the plot.</p>
+</section>
+<section id="final-reflections" class="level2">
+<h2 class="anchored" data-anchor-id="final-reflections">Final reflections</h2>
+<p>You have been monitoring catfish diet over time to detect climate-change effects in multiple lakes that are at different temperatures. Which prey probabilities would you track, and why would sample size and fish size matter?</p>
+<p>Explain in your own words the <strong>difficulties of planning a study</strong> to test if <strong>small catfish are eating crayfish less often in an altitude gradient</strong> (multiple lakes at different heights, i.e.&nbsp;different temperatures). Take into account that lakes have different sizes, and that the abundance of the prey is not the same in all of them.</p>
+</section>
+<section id="in-addition" class="level2">
+<h2 class="anchored" data-anchor-id="in-addition">In addition…</h2>
+<p>The type of problem you solved today is very similar to other research questions. How would you use this code to understand which pollinator visits an invasive flower (outcomes: bee, fly, butterfly, beetle… ), or quantify the causes of seed mortality to biofortify seeds in industry (outcomes: drought, herbivory, fungus, competition), or caracterise microhabitat use by lizards (outcomes: rock, grass, sand, shrub).</p>
+<p>How would you create a good visualisation of the data we have been playing with today? What do you think about these ones? Which prey types show the strongest association with catfish size? Which visualisation helps you see this most clearly, and why?</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>prey_cols <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"common carp"</span> <span class="ot">=</span> <span class="st">"#1f78b4"</span>,       <span class="co"># blue</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"other fish"</span> <span class="ot">=</span> <span class="st">"#6baed6"</span>,        <span class="co"># light blue</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"birds"</span> <span class="ot">=</span> <span class="st">"#e31a1c"</span>,             <span class="co"># red</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"crayfish"</span> <span class="ot">=</span> <span class="st">"#ff7f00"</span>,          <span class="co"># orange</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"other invertebrates"</span> <span class="ot">=</span> <span class="st">"#fdbf6f"</span>,<span class="co"># light orange</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"digested material"</span> <span class="ot">=</span> <span class="st">"#999999"</span>, <span class="co"># grey</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"plant material"</span> <span class="ot">=</span> <span class="st">"#33a02c"</span>)     <span class="co"># green</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(<span class="fu">t</span>(prey_given_size), <span class="at">beside =</span> <span class="cn">FALSE</span>,  <span class="at">col =</span> prey_cols[<span class="fu">colnames</span>(prey_given_size)],  <span class="at">ylab =</span> <span class="st">"Conditional probability"</span>,  <span class="at">main =</span> <span class="st">"Prey probabilities given catfish size"</span>,  <span class="at">border =</span> <span class="st">"white"</span>)</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>( <span class="st">"topright"</span>, <span class="at">legend =</span> <span class="fu">colnames</span>(prey_given_size), <span class="at">fill =</span> prey_cols[<span class="fu">colnames</span>(prey_given_size)],<span class="at">cex =</span> <span class="fl">0.8</span>,<span class="at">bty =</span> <span class="st">"n"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="CatfishDiet_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">1</span>))</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (s <span class="cf">in</span> <span class="fu">rownames</span>(prey_given_size)) {</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">barplot</span>(</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    prey_given_size[s, ],</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">col =</span> prey_cols[<span class="fu">colnames</span>(prey_given_size)],</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"Size:"</span>, s),</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">las =</span> <span class="dv">2</span>,</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="st">"Probability"</span>)}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="CatfishDiet_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">heatmap</span>( prey_given_size, <span class="at">Rowv =</span> <span class="cn">NA</span>, <span class="at">Colv =</span> <span class="cn">NA</span>, <span class="at">scale =</span> <span class="st">"none"</span>, <span class="at">col =</span> <span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">"white"</span>, <span class="st">"gold"</span>, <span class="st">"darkred"</span>))(<span class="dv">100</span>), <span class="at">margins =</span> <span class="fu">c</span>(<span class="dv">8</span>, <span class="dv">6</span>), <span class="at">xlab =</span> <span class="st">"Prey type"</span>, <span class="at">ylab =</span> <span class="st">"Catfish size class"</span>, <span class="at">main =</span> <span class="st">"Conditional probabilities of prey by catfish size"</span> )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="CatfishDiet_files/figure-html/unnamed-chunk-13-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,729 @@
+---
+title: "Analysing proportions - Seed germination"
+author: "Erola Fenollosa"
+format: html
+editor: visual
+---
+
+# Rewild or Wait? Should we reintroduce the Alpine Forget-me-not this year?
+
+# 0. Overview of this practical
+
+In this practical you will:
+
+-   Act as the **Alpine Rewilding Task Force**, using statistical evidence to decide whether to reintroduce *Eritrichium nanum*.
+
+-   Analyse **proportion data** using the binomial model (success/failure) and recognise when count data should instead follow a **Poisson model**.
+
+-   Estimate germination rates using the **binomial test** and **Agresti–Coull confidence intervals**, and interpret what these say about management thresholds.
+
+-   Compare treatments using **chi-square and Fisher’s exact tests**, and apply **goodness-of-fit tests** (χ² and G-test) to assess whether observed counts match expectations.
+
+-   **Critically evaluate statistical assumptions** (independence, expected counts, overdispersion) and link uncertainty to real conservation decisions.
+
+**IMPORTANT: Today aim is not to learn how to code this, but to understand the numbers. You will *not be asked to edit any of the code* provided.**
+
+# 1. Context of the data
+
+The rare alpine flower Forget-me-not (*Eritrichium nanum*) has disappeared two years ago from our regional mountain range due to warming and reduced snowpack. The seed bank holds 5,000 viable seeds collected before local extinction. You are the Alpine Restoration Committee and you need to make a decision: Should we attempt reintroduction this year?
+
+Unfortunately, funds are limited and you can't recommend reintroduction unless you are certain that it can be successful, not only due to the limited funding but also due to the limited amount of seeds (i.e. you have only one opportunity to reintroduce).
+
+Specifically, the conservation fund will support a reintroduction **only if estimated germination proportion ≥ 0.40**. Additionally, the Board requires that we be reasonably certain that true germination is not below 0.30 (they asked for about 95% confidence that true p \> 0.30). Seeds have been stored in optimal conditions for preservation, and eventhough some seed ageing might happen (i.e. seeds will be less likely to remain viable with storage time), scientific evidence from similar species reveal that specific treatments can contribute to break seed dormancy.
+
+*PAUSE: In case you are not familiar with artificial seed banks and seed dormancy, just a quick non-scientific language note: Seeds from some species can go dormant, meaning they will wait for germination until they receive certain environmental cues (increase in the number of light hours or increase of temperature, meaning spring is coming, as well as low temperatures for a certain period might indicate winter is over, or even "feeling" an acidic environment means seeds have gone through the digestive system of an animal and have been dispersed far enough from the mother, this is called scarification). In artificial seed banks, researchers explore the optimal conditions to preserve seeds in a dormant state (each species have evolved to respond to different environmental cues), as well as the optimal conditions to "wake all seeds up", maintaining high viability. Plants have evolved to not always germinate 100% for different reasons, including a bed-hedging strategy. Natural germination rates could range from 20 to 80%. This would mean, that if 30% germination is expected, every time we want to get some plants from the seed bank, we will be wasting 70% of the preserved sample. For this reason, unraveling which conditions are required for optimal germination is essential in seed bank management.*
+
+Let's get back to the case. For the alpine flower Forget-me-not, you have started small pilot trials to compare two "seed awakening" (dormancy break) treatments:
+
+-   `Cold` treatment (current protocol). This method mimics natural alpine winter conditions. Seeds are stored at 4 degrees for 8 weeks. The cold period simulates snow cover and winter chilling. It is cheap and logistically simple, requiring only refrigeration space.
+
+-   `Warm` treatment (experimental). This method simulates early spring soil warming. Seeds are first hydrated and then exposed to controlled warm temperatures (day: 15 degrees, night, 5 degrees) for 10 weeks. Some alpine seeds respond strongly to temperature fluctuations.
+
+For each treatment you use 12 petri dishes (or trays), 25 seeds per petri dishes. **Your job is to analyse the pilot data, quantify uncertainty, and recommend Proceed or Delay.**
+
+**The rules:**
+
+-   Snowpack conditions are ideal this year
+
+-   Funding is limited
+
+-   You have one opportunity to reintroduce
+
+**Management rules (given):**
+
+-   **Proceed** with reintroduction if estimated germination proportion `p_hat ≥ 0.40` **and** you are confident the true p is not below 0.30 (the Board wants \~95% confidence p \> 0.30).
+
+-   **Delay**. If results are borderline, discuss risk and recommend more trials or a pilot field test.
+
+**Risk Matrix (use this to decide):**
+
+-   **Green (Proceed):** lower bound of 95% CI \> 0.40 → proceed.
+
+-   **Amber (Caution / Conditional Proceed):** 95% CI includes 0.40 but lower bound \> 0.30 → risky but consider limited pilot reintroductions or more replication.
+
+-   **Red (Delay):** upper bound of 95% CI \< 0.40 OR lower bound ≤ 0.30 → do not proceed; collect more data or improve protocol.
+
+![](http://science.halleyhosting.com/nature/denali/flora/5/borage/eritrichium/nanum/aretioides3c.jpg){width="262"}
+
+![](http://science.halleyhosting.com/nature/denali/flora/5/borage/eritrichium/nanum/aretioides3f.jpg){width="289"}
+
+![](https://seedidguide.idseed.org/wp-content/uploads/2021/06/5dc087bbdacc3.jpg){width="295"}
+
+Information about the species here: <https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:907822-1>
+
+```{r}
+# Minimal package installs (run once)
+if (!requireNamespace("binom", quietly = TRUE)) install.packages("binom")
+library(binom)      # Agresti–Coull CIs
+```
+
+# 2. Prediction game — make your bets
+
+**QUESTION 1.** For each treatment (`Cold`, `Warm`) write a predicted germination proportion `p_hat` between 0 and 1. Example: Cold = 0.45, Warm = 0.70. For each prediction, write one sentence biological justification. Assign a confidence level (low, medium, high) meaning your chance of being within ±0.10 of the true p: low ≈ 30% chance, medium ≈ 60% chance, high ≈ 90% chance.
+
+ANSWER:
+
+~**Possible answer:** Predictions should combine biological reasoning and explicit uncertainty. In this case we have very limited information, so this is based on your imagination. A reasonable prediction would be Cold ≈ 0.60 and Warm ≈ 0.70. Cold stratification mimics natural alpine winter conditions, so we expect moderate-high germination around 60%, while the Warm treatment may enhance dormancy break and increase germination by roughly 10 percentage points. I would assign medium confidence (≈60% chance of being within ±0.10 of the true value), since although there is biological justification for Warm performing better, pilot conditions may not perfectly reflect field responses and seed dormancy can be variable. Getting used to generate expectations is key in statistics, I would recomend to do it as a habit.~
+
+# 3. Load the data
+
+These are the results of your pilot trial (12 petri dishes per treatment, 25 seeds each):
+
+```{r}
+set.seed(42) 
+df <- data.frame(tray = 1:24,   treatment = rep(c("Cold","Warm"), each = 12),   n_seeds = rep(25, 24) )  
+# Simulate realistic pilot results: Cold ~ 0.40, Warm ~ 0.50 
+df$n_germinated <- c(rbinom(12, size = 25, prob = 0.40),                     
+rbinom(12, size = 25, prob = 0.50))  
+# Show first rows 
+head(df, 6) 
+```
+
+![](https://www.cambridge.org/core/blog/wp-content/uploads/2022/07/Onofri3.jpg)
+
+# 4. Reveal the numbers
+
+A first thing we want to do is calculate the germination percentages and contrast your prior predictions. With the code below you can aggregate the data by treatment and show proportions:
+
+```{r}
+set.seed(42)
+tray <- 1:24
+treatment <- rep(c("Cold","Warm"), each = 12)
+n_seeds <- rep(25, 24)
+
+# Simulate pilot results: Cold ~ 0.40, Warm ~ 0.50
+n_germinated <- c(rbinom(12, size = 25, prob = 0.40),
+                  rbinom(12, size = 25, prob = 0.50))
+
+df <- data.frame(tray = tray,
+                 treatment = treatment,
+                 n_seeds = n_seeds,
+                 n_germinated = n_germinated,
+                 stringsAsFactors = FALSE)
+
+# show first rows
+head(df)
+
+# ---- Simple observed summary by treatment (base R) ----
+total_germ <- tapply(df$n_germinated, df$treatment, sum)
+total_seeds <- tapply(df$n_seeds, df$treatment, sum)
+p_hat <- total_germ / total_seeds
+trays <- tapply(df$n_germinated, df$treatment, length)
+
+summary_df <- data.frame(
+  treatment = names(total_germ),
+  total_germ = as.integer(total_germ),
+  total_seeds = as.integer(total_seeds),
+  p_hat = as.numeric(p_hat),
+  trays = as.integer(trays),
+  row.names = NULL,
+  stringsAsFactors = FALSE
+)
+
+print(summary_df)
+```
+
+**QUESTION:** Were your guesses close to the actual germination rates? Are the results surprising? Would you say there is evidence to prove that one of the treatments work better than the other when germinating the Forget-me-not seeds? Consider if you think we have used enough, or more than enough seeds to do this test.
+
+*ANSWER*:
+
+~**Possible answer:** According to the numbers, the total seeds that germinated in the cold treatment were 131 out of 300, which is a proportion of 0.45 (p hat). The warm had a higher germination percentage, with p hat being 0.56, which is a 56% of germination. I am surprised by the low germinations percentages found. I can't be sure if the treatments are different, but they seem to have both medium to low germination percentages. The estimated proportion of seeds that germinated was lower in the cold treatment, but I need to understand the variability of this p hat to guarantee if there are differences or not. The total number of seeds seem high, but since less than half germinated, perhaps it was a good idea to have that many.~
+
+# 5. Visualise data — look before you test
+
+Plot tray-level proportions and overlay group means. Compute Agresti–Coull CI
+
+```{r}
+# colours consistent with your ggplot version 
+col_cold <- "#2C7BB6" 
+col_warm <- "#D7191C" 
+cols <- ifelse(df$treatment == "Cold", col_cold, col_warm) 
+# per-tray proportions 
+prop_per_tray <- df$n_germinated / df$n_seeds
+
+# Set margins
+par(mar = c(5,5,4,2) + 0.1)
+
+# Split proportions by treatment
+prop_cold <- prop_per_tray[df$treatment == "Cold"]
+prop_warm <- prop_per_tray[df$treatment == "Warm"]
+
+# Plot empty frame first
+plot(1, type = "n",
+     xlim = c(0.5, 2.5), ylim = c(0,1),
+     xaxt = "n",
+     xlab = "Treatment",
+     ylab = "Germination proportion per tray",
+     main = "Per-petri dish germination proportions of Eritrichium nanum")
+
+axis(1, at = c(1,2), labels = c("Cold","Warm"))
+
+# Add jittered points manually
+points(jitter(rep(1, length(prop_cold)), amount = 0.08),
+       prop_cold, pch = 19, col = col_cold)
+
+points(jitter(rep(2, length(prop_warm)), amount = 0.08),
+       prop_warm, pch = 19, col = col_warm)
+
+# Overlay group means
+points(1, mean(prop_cold), pch = 18, cex = 2.2)
+points(2, mean(prop_warm), pch = 18, cex = 2.2)
+
+# Add legend
+legend("bottomright",
+       legend = c("Cold","Warm"),
+       pch = 19,
+       col = c(col_cold, col_warm),
+       bty = "n")
+
+```
+
+```{r}
+# Agresti-Coull CI for each treatment 
+ci_list <- lapply(1:nrow(summary_df), function(i){
+  x <- summary_df$total_germ[i]
+  n <- summary_df$total_seeds[i]
+  ci <- binom.confint(x = x, n = n, methods = "ac")
+  # binom.confint returns a data.frame of 1 row
+  data.frame(treatment = summary_df$treatment[i],
+             est = ci$mean,
+             lower = ci$lower,
+             upper = ci$upper,
+             stringsAsFactors = FALSE)
+})
+ci_table <- do.call(rbind, ci_list)
+ci_table$est <- round(ci_table$est, 3)
+ci_table$lower <- round(ci_table$lower, 3)
+ci_table$upper <- round(ci_table$upper, 3)
+print(ci_table)
+```
+
+**QUESTION:** Explain the plot in your own words. What does each single point represent? Would you say there is a big variation? If tray variation seems larger than expected, what biological factors could cause that (e.g., tray micro-environment, contamination, clumping)?
+
+*ANSWER*:
+
+~**Possible answer:** The plot shows the germination percentage in each petri dish (or tray) acording to the treatment. Each point represents a petri dish and the number, the amount of successes (seeds that germinated), out of the total seeds. Deciding if a variation is big or small depends on a lot of factors. I would consider discussing that this is a proportion, and therefore ranges from 0 to 1. We are observing variations around 0.3 (i.e a 30%) around the mean value, which could be a meaningful variation. Descritpion of variation always needs to be supported by contextual information. I can envision different factors increasing variability. For example, if the micro-environmental conditions are different between petri dishes, for example, some of them had less water, or were closer to the light source. Some seeds being contaminated might also affect, as well as the density of seeds, which might not be absolutely homogeneous.~
+
+**QUESTION:** Explain the numbers from the table in your own words. What do you think are the mean, lower and upper? What conclusions can you take from this?
+
+*ANSWER*:
+
+~**Possible answer:** The table shows the p-hat of each treatment, i.e., the proportion of germinated seeds estimated in our sample. The cold treatment promoted a germination of 43.7% in average, whereas the warm a 56%. The lower and upper values correspond to the lower and upper confidence interval limits, calculated using the Agresti-Coull method. This means that we can guarantee that 95% of the times, the average of the cold treated seeds germination percentage will be between 0.382 and 0.493. The same for the warm. Therefore we can tell the board that the mean germination is indeed around 40 and we can guarantee that it will not be under 30%, since the lowest limit is higher than 0.3.~
+
+# 6. One-sample binomial test & CI for `Cold`
+
+Test the policy threshold directly (H0: p = 0.40 or H0: p = 0.30 depending on question). We'll test both:
+
+-   Is `Cold` significantly different from the decision threshold 0.40?
+
+-   Are we 95% confident `p > 0.30`?
+
+```{r}
+# Cold
+cold_idx <- which(summary_df$treatment == "Cold")
+x_cold <- summary_df$total_germ[cold_idx]
+n_cold <- summary_df$total_seeds[cold_idx]
+cat("\nCold: x =", x_cold, "n =", n_cold, "p_hat =", round(x_cold/n_cold,3), "\n")
+print(binom.test(x = x_cold, n = n_cold, p = 0.40, alternative = "two.sided"))
+print(binom.test(x = x_cold, n = n_cold, p = 0.30, alternative = "greater"))
+```
+
+**QUESTION:** Explain the results by answering the two questions above. In the code above, why are we using "`two.sided`" and "`greater`"? Explain which information is giving the different tests we did:
+
+*(if you are not sure what each line is doing, just copy and paste it to the Console above to check it)*
+
+*ANSWER*:
+
+~**Possible answer:** For the Cold treatment, we observed 131 germinated seeds out of 300, giving~ p~\^​≈0.437. When testing against the policy threshold of 0.40 using a **two-sided binomial test**, the p-value is relatively large (greater than 0.05), meaning we do **not** have strong evidence that the true germination rate is different from 0.40. In other words, Cold is statistically compatible with the 0.40 threshold. When testing whether we are confident that~ p\>0.30p \> 0.30p~\>0.30 using a **one-sided (“greater”) test**, the p-value is very small, meaning we have strong evidence that the true germination rate is above 0.30. This suggests we can be reasonably confident that Cold exceeds the minimum safety threshold required by the Board. The Agresti–Coull 95% confidence interval provides a range of plausible values for the true germination proportion. Since the lower bound is above 0.30, we can say we are approximately 95% confident that true germination is greater than 0.30. However, because the CI includes 0.40, we cannot be certain that Cold clearly exceeds the management threshold of 0.40.~
+
+-   ~`binom.test(x = x_cold, n = n_cold, p = 0.40, alternative = "two.sided")` : This tests whether the true germination probability is different from 0.40 in either direction (higher or lower). We use `"two.sided"` because the question is: *Is Cold significantly different from 0.40?* We are not assuming it must be higher or lower, just different.~
+
+-   ~`binom.test(x = x_cold, n = n_cold, p = 0.30, alternative = "greater")` : This tests whether the true germination probability is greater than 0.30. We use `"greater"` because the policy question is directional: we want to know whether germination exceeds 0.30, not whether it is simply different from it.~
+
+# 7. One-sample binomial test & CI for `Warm`
+
+Test the policy threshold directly (H0: p = 0.40 or H0: p = 0.30 depending on question). We'll test both:
+
+-   Is `Warm`significantly different from the decision threshold 0.40?
+
+-   Are we 95% confident `p > 0.30`?
+
+```{r}
+# Warm
+warm_idx <- which(summary_df$treatment == "Warm")
+x_warm <- summary_df$total_germ[warm_idx]
+n_warm <- summary_df$total_seeds[warm_idx]
+cat("\nWarm: x =", x_warm, "n =", n_warm, "p_hat =", round(x_warm/n_warm,3), "\n")
+print(binom.test(x = x_warm, n = n_warm, p = 0.40, alternative = "two.sided"))
+print(binom.test(x = x_warm, n = n_warm, p = 0.30, alternative = "greater"))
+```
+
+**QUESTION:** Explain the results as you did before with the cold treatment. Answer the two questions above. Explain which information is giving the different tests we did:
+
+*ANSWER*:
+
+~**Possible answer:** For the Warm treatment, we observed 168 germinated seeds out of 300, giving~ p h~at of 0.456. When testing against the policy threshold of 0.40 using a **two-sided binomial test**, the p-value smaller than 0.05, meaning we do have enough evidence that the true germination rate is different from 0.40. In other words, the Warm treatment is statistically "incompatible" with the 0.40 threshold, the germination percentage is not 0.4, it is bigger. When testing whether we are confident that~ p\>0.30p \> ~using a **one-sided (“greater”) test**, the p-value is also very small, meaning we have strong evidence that the true germination rate is above 0.30. This suggests we can be reasonably confident that Warm exceeds the minimum safety threshold required by the Board. The Agresti–Coull 95% confidence interval provides a range of plausible values for the true germination proportion. Since the lower bound is above 0.30, we can say we are approximately 95% confident that true germination is greater than 0.30. However, because the CI includes 0.40, we cannot be certain that Cold clearly exceeds the management threshold of 0.40.~
+
+-   ~`binom.test(x = x_cold, n = n_cold, p = 0.40, alternative = "two.sided")` : This tests whether the true germination probability is different from 0.40 in either direction (higher or lower). We use `"two.sided"` because the question is: *Is Cold significantly different from 0.40?* We are not assuming it must be higher or lower, just different.~
+
+-   ~`binom.test(x = x_cold, n = n_cold, p = 0.30, alternative = "greater")` : This tests whether the true germination probability is greater than 0.30. We use `"greater"` because the policy question is directional: we want to know whether germination exceeds 0.30, not whether it is simply different from it.~
+
+~Warm shows strong statistical evidence of higher germination (p̂ ≈ 0.56; 95% CI ≈ 0.50–0.62), so it exceeds the Board’s minimum thresholds — but remember to combine these numbers with biological realism (independence, lab→field differences, cost) before recommending full reintroduction. Additional takeaway: Tests need to be designed carefully to provide the answers we actually need.~
+
+# Compare Cold vs Warm (two-sample) — effect size & tests
+
+So, you have tested weather youtr proposed tests would satisfy the certanity conditions the board imposed. Could you also explain them using one of them is better than the other? Are the treatments truly different? Note that in our previous session we also tested if treatments were significantly different, but that was for continuous data (the sugar contents of strawberry). This time we need a test for proportion data, and therefore we will use a different strategy to capture the probability of making an error on accepting or discarding H0. **Personal reflection:** think about the differences between what we did last week and this type of data. How would you propose to test if the differences are significant in this case?
+
+We will now test whether `Warm` improves germination compared to `Cold`. We will show both `prop.test` (chi-square approx) and Fisher exact (exact).
+
+```{r}
+# ---- Compare Cold vs Warm: contingency, prop.test and Fisher (base R) ----
+x <- c(x_cold, x_warm)
+n <- c(n_cold, n_warm)
+
+# observed contingency matrix
+mat <- matrix(c(x[1], n[1]-x[1],
+                x[2], n[2]-x[2]), nrow = 2, byrow = TRUE)
+rownames(mat) <- c("Cold","Warm")
+colnames(mat) <- c("Germ","NoGerm")
+cat("\nObserved 2 x 2 contingency matrix:\n")
+print(mat)
+
+# pooled proportion under H0
+pooled_p <- sum(x)/sum(n)
+cat("\nPooled proportion (under H0 = same p):", round(pooled_p, 3), "\n")
+
+# prop.test (chi-square approx)
+prop_res <- prop.test(x = x, n = n, correct = FALSE)
+cat("\nprop.test (chi-square) statistic:\n")
+print(prop_res$statistic)
+cat("p-value:", format.pval(prop_res$p.value), "\n")
+
+# Fisher exact (exact)
+fisher_res <- fisher.test(mat)
+cat("\nFisher exact p-value:\n")
+print(format.pval(fisher_res$p.value))
+
+# effect size: Warm - Cold (make positive)
+p_warm <- x[2] / n[2]
+p_cold <- x[1] / n[1]
+diff_prop <- p_warm - p_cold
+cat("\nEffect size (Warm - Cold):", round(diff_prop, 3), "\n")
+
+# prop.test CI corresponds to (p1 - p2) where p1 is first group passed to prop.test
+# To get CI for Warm - Cold we run prop.test with the Warm counts first:
+prop_res_warmfirst <- prop.test(x = c(x[2], x[1]), n = c(n[2], n[1]), correct = FALSE)
+ci_diff <- prop_res_warmfirst$conf.int
+cat("Approx 95% CI for (Warm - Cold):", round(ci_diff[1],3), "to", round(ci_diff[2],3), "\n")
+
+
+
+```
+
+**QUESTION.** Take a look at the outputs. Explain the following results:
+
+-   Why is the H0 0.498? (or any other observed value in case you changed the numbers)
+
+*ANSWER*:
+
+~**Possible answer:** That 0.498 is the *pooled proportion* = total germinated / total seeds across both treatments. Under H₀ (same p in both groups) the expected cell counts are computed from that pooled p.~
+
+-   How many seeds did not germinate under the warm treatment? (this question is to make sure you know where the observed contingency matrix is)
+
+*ANSWER*:
+
+~**Possible answer:**  132 seeds (Warm row: Germ = 168, NoGerm = 132).~
+
+-   Is the p-value of the prop.test (chi-square) different than the Fisher exact test? Is the conclusion the same?
+
+*ANSWER*:
+
+~**Possible answer:**~ T~hey differ slightly (≈0.0025 vs ≈0.0033) because `prop.test` uses a chi-square approximation while Fisher is exact. The conclusion is the same: both give small p-values → reject H₀. The Fisher exact test uses the observed and expected frequesncies to calculate the p-value, whereas the p-value calculation from the chi-square estimation relies on how good the estimation of the chi-square distribution fits the data. When the sample size is small, the Fisher exact test is more reliable, but it is very usual that both get you to the same conclusion. Takeaway from this is that there are multiple ways of calculating how common an event is, and they all have limitations.~
+
+-   What does it mean that the effect size (Warm-Cold) is 0.123 (or any other if you changed the numbers)? Is this increase biologically meaningful? Write a sentence including the effect size and CI with your own words.
+
+*ANSWER*:
+
+~**Possible answer:** Effect = 0.123 means Warm increased germination by 12.3 percentage points (Warm ≈ 0.560 vs Cold ≈ 0.437). The 95% CI ≈ (0.044, 0.203) shows the increase is statistically significant, but practical significance is borderline, since an increase on 12% germination might not be biologically enought to make a difference. It will depend of the cost of the Warm treatment to decide if using this treatment is cost-efficient. We are 95% sure that the warm treatment increases a 12.3% the germination percentage, and even though this is small, it is a statistically significant increase.~
+
+# 8. Simulation demo: what does a p-value really mean?
+
+We tested if germination under the cold treatment was equal to 0.40. When doing this, the binomial test gave us a p-value. But what does that number actually represent? (Make sure you know where this number was in the questions above).
+
+This p-value represents the following: If the true germination probability really were 0.40, how often would we observe results as extreme as ours just by random chance? Let's simulate it!
+
+We will assume that true germination probability is 0.40 and we planted n_cold seeds (300). If that is true, then the number of germinated seeds follows a binomial distribution. We will simulate many repeated experiments under that assumption.
+
+```{r}
+# Number of simulated experiments
+B <- 5000  
+
+# Simulate B experiments under H0: p = 0.40
+simulated_successes <- rbinom(B, size = n_cold, prob = 0.40)
+
+# Look at first six simulated outcomes (numer of seeds germinated)
+head(simulated_successes)
+```
+
+What this does is generate a random numbers dataset from a binomial distribution. Each number represents one hypothetical experiment (how many seeds germinated from the 300 we used). We repeat the experiment 5,000 times.
+
+What we actually observed was:
+
+```{r}
+x_cold
+```
+
+Now we ask: In our simulated world (where p = 0.40), how often do we see results as far away from expectation as our real data? The expected number of successes under H0 is:
+
+```{r}
+expected_null <- n_cold * 0.40
+expected_null
+```
+
+Now we compute how extreme our observation was:
+
+```{r}
+observed_distance <- abs(x_cold - expected_null)
+observed_distance
+
+```
+
+Now count how many simulations were at least that extreme:
+
+```{r}
+p_simulated <- mean(abs(simulated_successes - expected_null) >= observed_distance)
+p_simulated
+```
+
+This the proportion of simulated experiments that were as extreme as or more extreme than what we observed. That is the p-value, and it should be close to the p-value from:
+
+```{r}
+binom.test(x_cold, n_cold, p = 0.40)
+```
+
+To consolidate these numbers take a look at this histogram. The red line is our observed result. The p-value is the area of the histogram in both tails beyond this distance.
+
+```{r}
+hist(simulated_successes,
+     breaks = 30,
+     main = "Simulated outcomes under H0 (p = 0.40)",
+     xlab = "Number of germinated seeds out of 300")
+
+abline(v = x_cold, col = "red", lwd = 3)
+```
+
+**TEST YOURSELF WITH THESE QUESTIONS:**
+
+-   If we increased `n_cold` (sample size), would the spread of simulated results get wider or narrower?
+
+*ANSWER*:
+
+~**Possible answer:** The spread of *proportions* shrinks like~ sqrt(p(1-p)/n~)​, so the proportion values become **narrower** (more precise).~
+
+-   With a larger sample size, would extreme deviations become more or less likely?
+
+*ANSWER*:
+
+~**Possible answer:** Less likely. Larger~ n ~makes the sample proportion cluster tightly around the true~ p~, so large proportional deviations from the null are rarer. (In absolute counts a big deviation may still appear but is judged relative to a larger SD.)~
+
+-   If the true proportion of germinated seeds were 0.38 instead of 0.40, would the p-value necessarily be small?
+
+*ANSWER*:
+
+~**Possible answer:** No. A p-value depends on the *observed data* and the sample size. A true difference of 0.02 (0.38 vs 0.40) is small; with~ n=300 ~it’s unlikely to give a very small p unless the observed outcome happens to be far from 0.40. Larger samples can detect such small differences, small samples usually cannot. Global takeaway: bigger n means more precision for proportions; small effect sizes can be statistically detectable only with sufficiently large samples, so always interpret p-values together with effect size and sample size.~
+
+# 9. The final decision: rewild or wait?
+
+You are now in the final meeting of the **Alpine Rewilding Task Force**. You must recommend one action for *Eritrichium nanum*. But the situation is not simple. Additional realities:
+
+-   Your pilot experiment revealed that **Warm treatment increases germination** — but it is expensive and labour-intensive.
+
+-   ❄ **Cold treatment is cheap** — but germination may be borderline.
+
+-   ⏳ **If you delay reintroduction**, seeds will remain in storage for another year. Seed viability typically declines slightly with age. Waiting may reduce germination success next season, but we don't know at which rate. However, you have the opportunity to improve the warm treatment and improve field survive methods, as well as produce more seeds with artificial seeds production if that is important.
+
+-   💰 The conservation budget allows only one full reintroduction attempt in the next two years.
+
+Write one paragraph (2–4 sentences) including:
+
+-   The statistical test(s) used (binomial test, prop.test, Fisher, CI)
+
+-   Key numeric evidence (p-value, CI bounds, effect size)
+
+-   Your recommendation defensible with numbers.
+
+-   A short biological justification (cost, ageing risk, uncertainty tolerance)
+
+*ANSWER*:
+
+~**Possible answer:** I examined the pilot data with exact binomial tests for each treatment and a two-sample comparison (prop.test and Fisher’s exact); the two-sample tests give **p ≈ 0.0025–0.0033** and the estimated effect size **Warm − Cold ≈ 0.123** with an approximate 95% CI **≈ (0.044, 0.203)**. Statistically, Warm clearly outperforms Cold (the CI excludes 0 and Warm is also individually \>0.40), but the lower CI bound (≈4.4%) falls short of the Board’s **10% practical threshold**, so practical benefit is promising but not guaranteed. Given the budget/seed constraints and the risk of seed ageing if we delay, my defensible compromise is **a limited pilot release using the Warm protocol (small-scale reintroduction, intensive monitoring)** rather than a full-scale attempt or outright delay — this uses fewer seeds, produces field evidence to reduce uncertainty, and preserves the option to scale up next year if early survival confirms the lab gains. Biological rationale: Warm gives higher, more synchronous germination (so higher establishment potential), but because it is costlier and uncertainty around the true gain remains, a staged pilot balances conservation ambition with prudent risk management. It is worth mentioning that because germination percentages are well below 100%, the number of seeds required scales quickly with the number of individuals we aim to establish; therefore, if the target population size is large or the Warm treatment substantially increases costs, we may not have enough seeds (or budget) to justify a full reintroduction, which could shift the decision toward a smaller pilot or delaying until seed stock and resources are sufficient.~
+
+**TEST YOUR RESPONSE.** The following code will ask you to choose between Rewild or Wait , as welll as the treatment applied to germinate the seeds considering different elements such as the cost of the treatments, the benefits and drawbacks of waiting, etc. Check if your decision was the right call!
+
+*NOTE: The code needs your input. Run the chunk and check the console to choose options.*
+
+```{r}
+# ------------------------------
+# Interactive Decision Simulator 
+# Rewild now? Wait one year?
+# ------------------------------
+library(ggplot2)
+
+# ---------- Editable PARAMETERS ----------
+# Current pilot estimates (this year) — NOT sufficient
+p_germ_cold_now <- 0.35
+p_germ_warm_now <- 0.45
+p_field_survival <- 0.60
+
+# Next year (after waiting)
+# Warm works well and efficiently
+p_germ_cold_next <- 0.45   # Cold works but moderately
+p_germ_warm_next <- 0.65   # Warm works very well next year
+
+# If you wait one year, you can produce/acquire extra seeds:
+seed_bank_increase_if_wait <- 4000  
+
+# Costs and resources
+cost_per_seed <- 0.10
+extra_cost_warm_per_seed <- -0.02   # Warm becomes cheaper per seed next year
+fixed_setup_cost <- 500
+seed_bank_total_now <- 4000   
+
+# Management target
+required_established <- 3000
+
+# Simulation settings
+Bsim <- 2000   # Monte-Carlo replicates for the dramatic distributio
+
+# ---------- Interactive student inputs ----------
+student_recommendation <- NULL
+if (interactive()) {
+  repeat {
+    student_recommendation <- readline(prompt = "Choose action for Year 1: type 'Rewild' to rewild now or 'Wait' to delay one year: ")
+    student_recommendation <- trimws(tolower(student_recommendation))
+    if (student_recommendation %in% c("rewild", "wait")) break
+    cat("Please type 'Rewild' or 'Wait'.\n")
+  }
+  student_recommendation <- ifelse(student_recommendation == "rewild", "Rewild", "Wait")
+} else {
+  # Default for non-interactive runs — change if you knit
+  student_recommendation <- "Wait"  # "Rewild" or "Wait"
+}
+
+# If rewild now, ask which treatment now
+student_treatment_now <- NULL
+if (student_recommendation == "Rewild") {
+  if (interactive()) {
+    repeat {
+      student_treatment_now <- readline(prompt = "If rewilding now, choose treatment 'Cold' or 'Warm': ")
+      student_treatment_now <- trimws(tolower(student_treatment_now))
+      if (student_treatment_now %in% c("cold", "warm")) break
+      cat("Please type 'Cold' or 'Warm'.\n")
+    }
+    student_treatment_now <- ifelse(student_treatment_now == "cold", "Cold", "Warm")
+  } else {
+    student_treatment_now <- "Warm"  # default when not interactive
+  }
+}
+
+# If wait, ask which treatment they'd plan next year
+student_treatment_next <- NULL
+if (student_recommendation == "Wait") {
+  if (interactive()) {
+    repeat {
+      student_treatment_next <- readline(prompt = "If waiting, which treatment will you use next year? Type 'Cold' or 'Warm': ")
+      student_treatment_next <- trimws(tolower(student_treatment_next))
+      if (student_treatment_next %in% c("cold", "warm")) break
+      cat("Please type 'Cold' or 'Warm'.\n")
+    }
+    student_treatment_next <- ifelse(student_treatment_next == "cold", "Cold", "Warm")
+  } else {
+    student_treatment_next <- "Warm"  # default when not interactive
+  }
+}
+
+# ---------- Helper function to evaluate a plan ----------
+# plan: list with elements: when = 0 (now) or 1 (wait 1 year), treatment 'Cold'/'Warm'
+evaluate_plan <- function(plan, seed_bank_now = seed_bank_total_now, verbose = FALSE) {
+  # choose p_germ depending on plan timing and treatment
+  if (plan$when == 0) {
+    p_germ_plan <- ifelse(plan$treatment == "Cold", p_germ_cold_now, p_germ_warm_now)
+    effective_seed_bank <- seed_bank_now
+  } else { # waiting one year: use next-year explicit probabilities and increased seeds
+    p_germ_plan <- ifelse(plan$treatment == "Cold", p_germ_cold_next, p_germ_warm_next)
+    effective_seed_bank <- seed_bank_now + seed_bank_increase_if_wait
+  }
+  p_germ_plan <- max(p_germ_plan, 0)  # safety
+  
+  # cost per seed for plan
+  extra_cost_per_seed <- ifelse(plan$treatment == "Cold", 0, extra_cost_warm_per_seed)
+  
+  # combined establishment probability
+  p_establish <- p_germ_plan * p_field_survival
+  # seeds needed in expectation (ceiling)
+  seeds_needed <- if (p_establish > 0) ceiling(required_established / p_establish) else Inf
+  # total cost
+  total_cost <- seeds_needed * (cost_per_seed + extra_cost_per_seed) + fixed_setup_cost
+  # seed bank sufficiency
+  suff <- seeds_needed <= effective_seed_bank
+  
+  # Monte Carlo simulate established plants (simulate seeds_needed seeds)
+  set.seed(100 + plan$when + nchar(plan$treatment)) # reproducible-ish
+  established <- numeric(Bsim)
+  if (is.finite(seeds_needed) && seeds_needed > 0 && seeds_needed < Inf) {
+    for (b in seq_len(Bsim)) {
+      germinated <- rbinom(1, size = seeds_needed, prob = p_germ_plan)
+      est <- rbinom(1, size = germinated, prob = p_field_survival)
+      established[b] <- est
+    }
+    prob_success <- mean(established >= required_established)
+    expected_established <- mean(established)
+  } else {
+    established <- rep(0, Bsim)
+    prob_success <- 0
+    expected_established <- 0
+  }
+  
+  list(
+    plan = plan,
+    p_germ_plan = p_germ_plan,
+    p_establish = p_establish,
+    seeds_needed = seeds_needed,
+    effective_seed_bank = effective_seed_bank,
+    total_cost = total_cost,
+    suff = suff,
+    established = established,
+    prob_success = prob_success,
+    expected_established = expected_established
+  )
+}
+
+# ---------- Build chosen plan depending on student input ----------
+if (student_recommendation == "Rewild") {
+  chosen_spec <- list(when = 0, treatment = student_treatment_now)
+  chosen_eval <- evaluate_plan(chosen_spec)
+  # Alternative: compare to waiting alternatives (both Cold and Warm next year)
+  alt_wait_cold <- evaluate_plan(list(when = 1, treatment = "Cold"))
+  alt_wait_warm <- evaluate_plan(list(when = 1, treatment = "Warm"))
+  # best alternative is the wait option with higher prob_success
+  alternative_plan <- if (alt_wait_cold$prob_success >= alt_wait_warm$prob_success) alt_wait_cold else alt_wait_warm
+} else { # student chose Wait
+  # chosen plan is wait + student_treatment_next
+  chosen_eval <- evaluate_plan(list(when = 1, treatment = student_treatment_next))
+  # alternative: best immediate rewild now (choose best of Cold/Warm now)
+  alt_now_cold <- evaluate_plan(list(when = 0, treatment = "Cold"))
+  alt_now_warm <- evaluate_plan(list(when = 0, treatment = "Warm"))
+  alternative_plan <- if (alt_now_cold$prob_success >= alt_now_warm$prob_success) alt_now_cold else alt_now_warm
+}
+
+chosen_plan <- chosen_eval
+
+# ---------- Decide "right decision" with feasibility rule ----------
+
+if (!chosen_plan$suff) {
+  # If seed bank is insufficient, automatically not optimal
+  right_decision <- FALSE
+} else if (!alternative_plan$suff) {
+  # If alternative is infeasible but chosen plan is feasible
+  right_decision <- TRUE
+} else {
+  # If both feasible, compare probability of success
+  right_decision <- chosen_plan$prob_success >= alternative_plan$prob_success
+}
+
+# ---------- Plot distribution for the chosen plan ----------
+df_plot <- data.frame(established = chosen_plan$established)
+fill_col <- ifelse(chosen_plan$plan$treatment == "Cold", "#2C7BB6", "#D7191C")
+border_col <- ifelse(right_decision, "#2E7D32", "#B00020") # green border for correct, red for wrong
+
+p <- ggplot(df_plot, aes(x = established)) +
+  geom_histogram(binwidth = 50, fill = fill_col, colour = "black", alpha = 0.85) +
+  geom_vline(xintercept = required_established, linetype = "dashed", size = 1.1) +
+  labs(title = paste0("Outcome distribution for your chosen plan: ",
+                      ifelse(chosen_plan$plan$when==0, "Rewild now", "Wait 1 year then rewild"),
+                      " (", chosen_plan$plan$treatment, ")"),
+       subtitle = paste0("p_germ used = ", round(chosen_plan$p_germ_plan,3),
+                         " ; p_field = ", p_field_survival,
+                         " ; prob success = ", round(chosen_plan$prob_success,3)),
+       x = "Number of established plants", y = "Simulated replicates") +
+  theme_minimal(base_size = 13) +
+  theme(panel.border = element_rect(colour = border_col, fill = NA, size = 2))
+
+print(p)
+
+# ---------- Dramatic summary ----------
+cat("\n================= Decision Simulator Summary =================\n")
+cat("Your initial choice (Rewild now / Wait):", student_recommendation, "\n")
+if (student_recommendation == "Rewild") {
+  cat("You chose to rewild now with treatment:", chosen_plan$plan$treatment, "\n")
+} else {
+  cat("You chose to wait and will use treatment next year:", chosen_plan$plan$treatment, "\n")
+}
+cat("\n-- Chosen plan estimates --\n")
+cat("Assumed germination used for plan:", round(chosen_plan$p_germ_plan,3), "\n")
+cat("Combined per-seed establishment prob:", round(chosen_plan$p_establish,4), "\n")
+cat("Seeds required (expected):", chosen_plan$seeds_needed, "\n")
+cat("Effective seed bank available for this plan:", chosen_plan$effective_seed_bank, "\n")
+if (!chosen_plan$suff) {
+  cat("!!! Seed bank INSUFFICIENT by", chosen_plan$seeds_needed - chosen_plan$effective_seed_bank, "seeds\n")
+} else {
+  cat("Seed bank sufficient. Seeds remaining if used:", chosen_plan$effective_seed_bank - chosen_plan$seeds_needed, "\n")
+}
+cat("Estimated total cost: $", round(chosen_plan$total_cost,2), "\n")
+cat("Monte Carlo probability of meeting target (>= ", required_established, "): ", round(chosen_plan$prob_success*100,1), "%\n", sep = "")
+
+cat("\n-- Alternative plan (what you'd have gotten otherwise) --\n")
+cat("Alternative chosen (best alternative): Wait =", alternative_plan$plan$when==1, "; treatment =", alternative_plan$plan$treatment, "\n")
+cat("Assumed germination (alternative):", round(alternative_plan$p_germ_plan,3), "\n")
+cat("Effective seed bank for alternative:", alternative_plan$effective_seed_bank, "\n")
+cat("Probability of meeting target under alternative:", round(alternative_plan$prob_success*100,1), "%\n", sep = "")
+
+cat("\nVERDICT: ")
+
+if (!chosen_plan$suff) {
+  cat("NOT optimal — insufficient seeds to implement this plan.\n")
+} else if (right_decision) {
+  cat("RIGHT (better than the alternative under current assumptions).\n")
+} else {
+  cat("NOT optimal (the alternative had higher probability of success).\n")
+}
+cat("===============================================================\n\n")
+
+
+```
+
+# 10. Extra - experimental designing
+
+Edit the numbers and check how you would interpret a different scenarios. You could even include economical estimates for the different treatments. In this practical I propsed a debate/borderline scenario, where the difference between treatments was very close to the practical threshold. You could also test a clear-win scenario, where Cold true p ≈ 0.40 and Warm true p ≈ 0.60; or a mild improvement case with Cold true p ≈ 0.40 and Warm true p ≈ 0.45. To change this look for these lines:
+
+df\$n_germinated \<- c(rbinom(12, size = 25, prob = 0.40), rbinom(12, size = 25, prob = 0.50))
+
+And change the 0.40 for any other probability you want for the cold treatment, and the 0.50 for any other number for the warm treatment.
+
+Feel free to change also the number of seeds we planted on each petri dish (25) or the number of petri dishes we used (replicates number, 12). In this case you will also need to change this line with the appropiate numbers.
+
+df \<- data.frame(tray = 1:24, treatment = rep(c("Cold","Warm"), each = 12), n_seeds = rep(25, 24) )
+
+**FINAL NOTE:** Statistics does not tell us what to do. It tells us **how uncertain** we are when we decide.
+
+~**Possible answer**: Changing the probabilities, number of replicates, or seeds per Petri dish clearly shows how strongly sample size influences our conclusions. When we increase the number of seeds or replicates, confidence intervals become narrower and p-values more stable, meaning we can estimate germination rates with greater precision. With only 10 seeds per dish, random variation is much larger, one or two seeds can change the proportion dramatically, making it harder to detect real differences between treatments. In contrast, 100 seeds per dish greatly reduces uncertainty, because each individual seed has less influence on the final proportion. However, this decision clearly impacts the lab work and cost of the experiment. Whether 10 seeds are “enough” depends on the expected germination proportion and the size of the effect we want to detect. If germination is very high (e.g. 80–90%) or very low (e.g. 5–10%), even small samples might show clear differences. However, when proportions are around 40–60%, as in our case, variability is highest, so larger sample sizes are needed to confidently detect moderate differences (e.g. 10%). Therefore, experimental design should always consider the expected proportion and the minimum biologically meaningful difference before deciding how many seeds or replicates to use. The number of seeds per dish and the number of replicates directly control statistical precision. Good experimental design is not about using as many seeds as possible — it is about using enough to detect the effect size that matters biologically.~

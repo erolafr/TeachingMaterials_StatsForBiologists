@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Erola Fenollosa">
+
+<title>2_Descriptors and visualisations</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="2_Descriptors and visualisations_files/libs/clipboard/clipboard.min.js"></script>
+<script src="2_Descriptors and visualisations_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="2_Descriptors and visualisations_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="2_Descriptors and visualisations_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="2_Descriptors and visualisations_files/libs/quarto-html/popper.min.js"></script>
+<script src="2_Descriptors and visualisations_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="2_Descriptors and visualisations_files/libs/quarto-html/anchor.min.js"></script>
+<link href="2_Descriptors and visualisations_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="2_Descriptors and visualisations_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="2_Descriptors and visualisations_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="2_Descriptors and visualisations_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="2_Descriptors and visualisations_files/libs/bootstrap/bootstrap-9e3ffae467580fdb927a41352e75a2e0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">2_Descriptors and visualisations</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Erola Fenollosa </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="overview-of-this-practical" class="level2">
+<h2 class="anchored" data-anchor-id="overview-of-this-practical">0. Overview of this practical</h2>
+<p>In this session we will cover:</p>
+<ul>
+<li>Data visualisation is an art. What makes a good visualisation?</li>
+<li>How long will my red kite live? (<em>i.e.</em> How can we use R to quickly understand the centrality and variation of a variable?)</li>
+</ul>
+</section>
+<section id="the-art-of-data-visualisation" class="level2">
+<h2 class="anchored" data-anchor-id="the-art-of-data-visualisation">1. The art of data visualisation</h2>
+<p>Data visualization in biology is extremely necessary (Wong, 2012:&nbsp;<a href="https://www.nature.com/articles/nmeth.2258.pdf?origin=ppub" class="uri">https://www.nature.com/articles/nmeth.2258.pdf?origin=ppub</a>), but it is an art discipline itself. Please take a dive in this portal to explore the potential of data visualizations and explore at least one visualization type:&nbsp;<a href="https://datavizproject.com/" class="uri">https://datavizproject.com/</a>. Remember you can find R code to prepare those graph types here:&nbsp;<a href="https://r-graph-gallery.com/" class="uri">https://r-graph-gallery.com/</a>.</p>
+</section>
+<section id="data-visualisation-objectives" class="level2">
+<h2 class="anchored" data-anchor-id="data-visualisation-objectives">2. Data visualisation objectives</h2>
+<p>Non-exclusive data visualization aims:</p>
+<ul>
+<li><p><strong>Communicate</strong>: Communicate an idea or a result of an analysis. Impactful visualizations communicate more efficiently.</p></li>
+<li><p><strong>Explore</strong>: Exploratory data analysis (EDA) benefits from data visualization as they help understand the nature and characteristics of a variable set. Interactive visualizations are very useful to explore better the data following successive questioning.</p></li>
+<li><p><strong>Data in its context</strong>: understand the value of a particular information within its context, for example a company’s number of total sells in a ranking.</p></li>
+<li><p><strong>Find patterns and outliers</strong>: find out of the range values and identify hidden patterns, for example seek seasonality dynamics or hidden maps.</p></li>
+</ul>
+</section>
+<section id="how-to-create-a-good-visualisation" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-create-a-good-visualisation">3. How to create a good visualisation</h2>
+<ul>
+<li><p><strong>Define your Take Home Message (THM)</strong>: this is the first step and must be considered carefully. Define what do you want to tell to your targeted audience. Are you trying to show a trend? Are you trying to find data outliers? Define the aim of your visualization and which question are you trying to answer. Writing the figure caption with a heading title may help on this process.</p></li>
+<li><p><strong>Choose a plot type:</strong> There are plenty of plot types, generally there are the following categories: those that <strong>compare</strong> data groups, define <strong>distributions</strong>, and .</p></li>
+<li><p><strong>Draw by hand your plot</strong>: This will help you coding the figure as will make you detail the elements that it must include.</p></li>
+<li><p><strong>Prepare the data</strong>: Do you need any extra information? Do you need perhaps to calculate the mean and standard error by group, or standarise the data?</p></li>
+<li><p><strong>Pick aesthetic palette</strong>: Consider color-blind palettes. Make your figure intuitive: if your colour scale is temperature pick a blue to red colour scale. Function is way more important than aesthetics.</p></li>
+<li><p>Check that your are <strong>not missing anything essential</strong>: if it’s a map, does it have a scale? If the data has variation, have you included a way to represent it (standard error, jittered points, etc). If you’re showing something with colour or shape did you include a legend? Is the ink/information ratio balanced? Do not add ink to the plot that does not give extra information. The human eye is not prepared to compare areas and angles avoid pie charts.</p></li>
+<li><p><strong>Code the figure</strong></p></li>
+<li><p><strong>Test it</strong> with friends, the plot must be autoexplanatory. Check the readability of the different elements and the logic of its disposition.</p></li>
+</ul>
+<p>Remember, a good visualisation is: simple, effective, contains high information/low ink, intuitive, and <strong>honest</strong>.</p>
+<blockquote class="blockquote">
+<p>Good plots reduce thinking. Bad plots create the illusion of understanding.</p>
+</blockquote>
+</section>
+<section id="lets-play-is-this-a-good-visualisation" class="level2">
+<h2 class="anchored" data-anchor-id="lets-play-is-this-a-good-visualisation">4. Let’s play: Is this a good visualisation?</h2>
+<p><strong>EXERCICE 1. Choose one</strong> of the following plots, <strong>describe</strong> it and <strong>justify</strong> why or why not it is a good visualisations. How would you <strong>improve</strong> them?</p>
+<p><img src="images/case1.png" class="img-fluid"></p>
+<p><img src="images/case2.png" class="img-fluid"></p>
+<p><img src="images/case3.png" class="img-fluid"></p>
+<p><img src="images/case4.png" class="img-fluid"></p>
+<p><img src="images/case5.png" class="img-fluid"></p>
+<p><img src="images/case6.png" class="img-fluid"></p>
+<p><img src="images/case7.png" class="img-fluid"></p>
+<p><img src="images/case8.png" class="img-fluid"></p>
+<p><img src="images/case9.png" class="img-fluid"></p>
+<p><strong>EXERCICE 2</strong>. There are multiple ways to build a plot with the same data. The dataset “diamonds” contains the price of a list of diamonds with different properties, such as their “cut”. Google “diamond dataset R plot” and try to find the <strong>worst visualisation</strong>? Ask the student at your left and right if they agree with you.</p>
+<blockquote class="blockquote">
+<p><em>Memes about visualisations: Accounts I personally love: “Terrible maps” in X, as well as “Amazing maps” in X. “Chartosaur” in IG, “Datastuffplus” in IG</em></p>
+</blockquote>
+</section>
+<section id="how-long-will-my-red-kite-live" class="level2">
+<h2 class="anchored" data-anchor-id="how-long-will-my-red-kite-live">5. How long will my red kite live?</h2>
+<p>The aim of this final section is to learn to use R to quickly capture the centrality and variation of a variable. We will use R to calculate measurements of centrality and dispersion. But more importantly, how would you respond to the question: “How long will my red kite live?”.</p>
+<p>You are working with a conservation charity in the UK that monitors <strong>red kites (<em>Milvus milvus</em>)</strong>. After decades of decline, reintroduction programmes have been successful, and members of the public are now frequently seeing red kites soaring above their towns and countryside.</p>
+<p>At public talks and outreach events, one question keeps coming up:</p>
+<blockquote class="blockquote">
+<p><strong>“How long will my red kite live?”</strong></p>
+</blockquote>
+<p>This sounds like a simple question, but as scientists we know the answer is <em>not a single number</em>. Some red kites die young, others live surprisingly long lives. To communicate honestly with the public, we need to describe <strong>both the typical lifespan and how much variation there is</strong>.</p>
+<p>In this section, you will use a real-world conservation scenario to learn how to <strong>summarise a biological variable</strong> — red kite longevity — using R. You will calculate measurements of <strong>central tendency</strong> (mean, median, mode) and <strong>variation</strong> (range, variance, standard deviation, quartiles, interquartile range, standard error, and confidence intervals).</p>
+<p>By the end, you should be able to explain — in plain language — what the data say about red kite lifespan, and how confident we can be in our answer.</p>
+<p><img src="images/red-kite-raptor-bird-of-prey-milvus-milvus-feather-animal-wing-plumage-portrait.jpg" class="img-fluid"></p>
+</section>
+<section id="the-data-red-kite-longevity" class="level2">
+<h2 class="anchored" data-anchor-id="the-data-red-kite-longevity">The data: Red kite longevity</h2>
+<p>Suppose conservationists followed a group of red kites born in the same region of the UK and recorded how long each bird lived (in <strong>years</strong>).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>kite_longevity <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">8</span>, <span class="dv">9</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dv">9</span>, <span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">11</span>, <span class="dv">11</span>, <span class="dv">12</span>, <span class="dv">12</span>, <span class="dv">13</span>, <span class="dv">14</span>, <span class="dv">15</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dv">16</span>, <span class="dv">18</span>, <span class="dv">19</span>, <span class="dv">20</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Each number represents the lifespan of <strong>one individual red kite</strong>.</p>
+</section>
+<section id="exercise-1-first-look-at-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-1-first-look-at-the-data">Exercise 1 – First look at the data</h2>
+<ol type="1">
+<li>Look the vector <code>kite_longevity</code>.</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>kite_longevity</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]  2  3  4  5  6  7  7  8  8  9  9 10 10 11 11 12 12 13 14 15 16 18 19 20</code></pre>
+</div>
+</div>
+<ol type="1">
+<li>How many red kites are in this dataset?</li>
+</ol>
+<p><em>Hint:</em> use <code>length()</code></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><strong>Biological thinking:</strong> Why might this sample <em>not</em> represent every red kite in the UK?</p>
+<p>Take a look at these plots. Are these good visualisations?</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(kite_longevity, <span class="at">breaks =</span> <span class="dv">30</span>, <span class="at">col =</span> <span class="st">"hotpink"</span>, <span class="at">main =</span> <span class="st">"Kites!!!"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2_Descriptors-and-visualisations_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>( kite_longevity, <span class="at">breaks =</span> <span class="dv">8</span>, <span class="at">col =</span> <span class="st">"black"</span>,<span class="at">border =</span> <span class="st">"white"</span>, <span class="at">main =</span> <span class="st">"Distribution of red kite longevity"</span>,  <span class="at">xlab =</span> <span class="st">"Lifespan (years)"</span>,  <span class="at">ylab =</span> <span class="st">"Number of red kites"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2_Descriptors-and-visualisations_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(kite_longevity,<span class="at">horizontal =</span> <span class="cn">TRUE</span>, <span class="at">main =</span> <span class="st">"Red kite longevity"</span>,<span class="at">xlab =</span> <span class="st">"Lifespan (years)"</span>,<span class="at">col =</span> <span class="st">"lightblue"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2_Descriptors-and-visualisations_files/figure-html/unnamed-chunk-4-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stripchart</span>(kite_longevity,<span class="at">method =</span> <span class="st">"jitter"</span>,<span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">"darkgray"</span>,  <span class="at">xlab =</span> <span class="st">"Lifespan (years)"</span>,<span class="at">main =</span> <span class="st">"Red kite longevity (individual birds)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2_Descriptors-and-visualisations_files/figure-html/unnamed-chunk-4-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(kite_longevity, <span class="at">horizontal =</span> <span class="cn">TRUE</span>,<span class="at">col =</span> <span class="st">"lightblue"</span>,<span class="at">main =</span> <span class="st">"Red kite longevity with individual data"</span>, <span class="at">xlab =</span> <span class="st">"Lifespan (years)"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">stripchart</span>( kite_longevity, <span class="at">method =</span> <span class="st">"jitter"</span>,  <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">"darkgray"</span>,  <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2_Descriptors-and-visualisations_files/figure-html/unnamed-chunk-4-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( kite_longevity, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">main =</span> <span class="st">"Red kite longevity"</span>,<span class="at">ylab =</span> <span class="st">"Lifespan (years)"</span>, <span class="at">xlab =</span> <span class="st">"Bird number"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2_Descriptors-and-visualisations_files/figure-html/unnamed-chunk-4-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>( kite_longevity, <span class="at">breaks =</span> <span class="dv">8</span>, <span class="at">col =</span> <span class="st">"#8B3A2E"</span>,<span class="at">main =</span> <span class="st">"Mean and median red kite lifespan"</span>, <span class="at">xlab =</span> <span class="st">"Lifespan (years)"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">mean</span>(kite_longevity), <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">median</span>(kite_longevity), <span class="at">col =</span> <span class="st">"darkgray"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(  <span class="st">"topright"</span>,  <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"Mean"</span>, <span class="st">"Median"</span>),  <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"darkgray"</span>),  <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2_Descriptors-and-visualisations_files/figure-html/unnamed-chunk-4-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute density</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>kite_density <span class="ot">&lt;-</span> <span class="fu">density</span>(kite_longevity)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(  kite_density,  <span class="at">main =</span> <span class="st">"Estimated distribution of red kite longevity"</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Lifespan (years)"</span>,  <span class="at">ylab =</span> <span class="st">"Density"</span>,  <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"#8B3A2E"</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Add rug plot (individual data)</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">rug</span>(kite_longevity)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2_Descriptors-and-visualisations_files/figure-html/unnamed-chunk-4-8.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(kite_longevity, <span class="at">bw =</span> <span class="dv">1</span>), <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">main =</span> <span class="st">"Effect of smoothing on density estimation"</span>, <span class="at">xlab =</span> <span class="st">"Lifespan (years)"</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(<span class="fu">density</span>(kite_longevity, <span class="at">bw =</span> <span class="dv">3</span>), <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"Less smoothing"</span>, <span class="st">"More smoothing"</span>),</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2_Descriptors-and-visualisations_files/figure-html/unnamed-chunk-4-9.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( <span class="fu">density</span>(kite_longevity, <span class="at">bw =</span> <span class="fl">0.1</span>),  <span class="at">col =</span> <span class="st">"lightpink"</span>,<span class="at">lwd =</span> <span class="dv">4</span>,<span class="at">main =</span> <span class="st">"Red kite longevity!!!"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2_Descriptors-and-visualisations_files/figure-html/unnamed-chunk-4-10.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>( kite_longevity, <span class="at">breaks =</span> <span class="dv">8</span>,  <span class="at">col =</span> <span class="st">"lightgray"</span>,  <span class="at">border =</span> <span class="st">"white"</span>,  <span class="at">freq =</span> <span class="cn">FALSE</span>,  <span class="at">main =</span> <span class="st">"Distribution of red kite longevity"</span>,  <span class="at">xlab =</span> <span class="st">"Lifespan (years)"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(  <span class="fu">density</span>(kite_longevity),  <span class="at">lwd =</span> <span class="dv">2</span>,  <span class="at">col =</span> <span class="st">"#8B3A2E"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2_Descriptors-and-visualisations_files/figure-html/unnamed-chunk-4-11.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( <span class="fu">ecdf</span>(kite_longevity),  <span class="at">main =</span> <span class="st">"Cumulative distribution of red kite longevity"</span>,  <span class="at">xlab =</span> <span class="st">"Lifespan (years)"</span>,  <span class="at">ylab =</span> <span class="st">"Proportion of red kites"</span>,  <span class="at">col =</span> <span class="st">"#8B3A2E"</span>,  <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2_Descriptors-and-visualisations_files/figure-html/unnamed-chunk-4-12.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>kite_density <span class="ot">&lt;-</span> <span class="fu">density</span>(kite_longevity)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(  kite_density<span class="sc">$</span>y,  kite_density<span class="sc">$</span>x,  <span class="at">type =</span> <span class="st">"l"</span>,  <span class="at">col =</span> <span class="st">"#8B3A2E"</span>,  <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.02</span>, <span class="fl">0.02</span>),  <span class="at">xlab =</span> <span class="st">""</span>,  <span class="at">ylab =</span> <span class="st">"Lifespan (years)"</span>,  <span class="at">main =</span> <span class="st">"Violin-style view of red kite longevity"</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>( <span class="sc">-</span>kite_density<span class="sc">$</span>y,  kite_density<span class="sc">$</span>x,  <span class="at">col =</span> <span class="st">"#8B3A2E"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2_Descriptors-and-visualisations_files/figure-html/unnamed-chunk-4-13.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>hist_data <span class="ot">&lt;-</span> <span class="fu">hist</span>(kite_longevity, <span class="at">plot =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">image</span>(<span class="fu">t</span>(<span class="fu">as.matrix</span>(hist_data<span class="sc">$</span>counts)),  <span class="at">col =</span> <span class="fu">heat.colors</span>(<span class="dv">10</span>),  <span class="at">axes =</span> <span class="cn">FALSE</span>,  <span class="at">main =</span> <span class="st">"Heatmap-style view of longevity frequency"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="2_Descriptors-and-visualisations_files/figure-html/unnamed-chunk-4-14.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="exercise-2-measures-of-central-tendency" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-2-measures-of-central-tendency">Exercise 2 – Measures of central tendency</h2>
+<p>We want to describe what a <em>typical</em> lifespan looks like.</p>
+<section id="mean-lifespan" class="level3">
+<h3 class="anchored" data-anchor-id="mean-lifespan">2.1 Mean lifespan</h3>
+<ol type="1">
+<li>Calculate the <strong>mean</strong> longevity.</li>
+</ol>
+<p><em>Hint:</em> use <code>mean()</code></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><strong>Question:</strong> If someone asks “How long does a red kite live on average?”, which number are you giving them?</p>
+</section>
+<section id="median-lifespan" class="level3">
+<h3 class="anchored" data-anchor-id="median-lifespan">2.2 Median lifespan</h3>
+<ol type="1">
+<li>Calculate the <strong>median</strong> longevity.</li>
+</ol>
+<p><em>Hint:</em> use <code>median()</code></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><strong>Thinking:</strong> Why/When might the median be a better answer than the mean when talking to the public?</p>
+</section>
+<section id="mode" class="level3">
+<h3 class="anchored" data-anchor-id="mode">2.3 Mode</h3>
+<p>The <strong>mode</strong> is the most common value.</p>
+<ol type="1">
+<li><p>Look at the data and identify the mode <em>by inspection</em>.</p></li>
+<li><p>Is there a single mode or multiple modes?</p></li>
+</ol>
+<blockquote class="blockquote">
+<p><em>Note:</em> The statistical software R does not have a built-in function to calculate the mode of a dataset, but we could build a function to calculate it. You will learn how to create functions next year.</p>
+</blockquote>
+<p><strong>Thinking:</strong> In biology, when is the mode useful, and when is it less informative?</p>
+</section>
+</section>
+<section id="exercise-3-measures-of-spread-variation" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-3-measures-of-spread-variation">Exercise 3 – Measures of spread (variation)</h2>
+<p>A single number is not enough. Imagine telling the public that red kites live <em>10 years</em> — this sounds precise, but it hides an important truth. Some birds die very young, while others live much longer than 10 years. Two populations could have the same average lifespan but very different realities for individual birds. To describe longevity honestly, we must also explain <strong>how spread out the lifespans are</strong>: whether most red kites live close to the typical value, or whether lifespans vary widely. Measures of variation allow us to capture this biological diversity and avoid oversimplifying a complex natural process.</p>
+<section id="range" class="level3">
+<h3 class="anchored" data-anchor-id="range">3.1 Range</h3>
+<ol type="1">
+<li>Find the <strong>minimum</strong> and <strong>maximum</strong> lifespan and calculate the range.</li>
+</ol>
+<p><em>Hints:</em> <code>min()</code>, <code>max()</code> or try also <code>range()</code></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><strong>Question:</strong> Would it be misleading to say “red kites live between X and Y years”?</p>
+</section>
+<section id="variance-and-standard-deviation" class="level3">
+<h3 class="anchored" data-anchor-id="variance-and-standard-deviation">3.2 Variance and standard deviation</h3>
+<ol type="1">
+<li><p>Calculate the <strong>variance</strong>.</p></li>
+<li><p>Calculate the <strong>standard deviation</strong>.</p></li>
+</ol>
+<p><em>Hints:</em> <code>var()</code>, <code>sd()</code></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><strong>Interpretation:</strong> What does a large standard deviation tell you about differences between individual birds?</p>
+</section>
+<section id="quartiles-and-interquartile-range-iqr" class="level3">
+<h3 class="anchored" data-anchor-id="quartiles-and-interquartile-range-iqr">3.3 Quartiles and interquartile range (IQR)</h3>
+<ol type="1">
+<li>Calculate the <strong>quartiles</strong>. What does the multiple numbers mean?</li>
+</ol>
+<p><em>Hint:</em> <code>quantile()</code></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol start="2" type="1">
+<li>Calculate the <strong>interquartile range (IQR)</strong>.</li>
+</ol>
+<p><em>Hint:</em> <code>IQR()</code></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><strong>Thinking:</strong> Why is the IQR often preferred to the range when describing spread?</p>
+</section>
+</section>
+<section id="exercise-4-standard-error-and-uncertainty" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-4-standard-error-and-uncertainty">Exercise 4 – Standard error and uncertainty</h2>
+<p>The <strong>standard deviation</strong> describes variation among individuals. The <strong>standard error</strong> describes uncertainty in the <em>mean</em>.</p>
+<ol type="1">
+<li>Calculate the standard error of the mean lifespan.</li>
+</ol>
+<p><em>Hint:</em> sd(x) / sqrt(length(x)), where “x” is our variable</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><strong>Interpretation:</strong> What happens to the standard error if we study more red kites?</p>
+</section>
+<section id="exercise-5-confidence-interval" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-5-confidence-interval">Exercise 5 – Confidence interval</h2>
+<p>We want to give the public a range that reflects uncertainty in our estimate.</p>
+<ol type="1">
+<li>Calculate a <strong>95% confidence interval</strong> for the mean lifespan (Assume our variable’s distribution is Gaussian)</li>
+</ol>
+<p><em>Hint:</em> mean(x) + c(-1, 1) * 1.96 * (sd(x) / sqrt(length(x))), where “x” is our variable</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><strong>Question:</strong> How would you explain a confidence interval to a non‑scientist?</p>
+</section>
+<section id="final-reflection-answering-the-publics-question" class="level2">
+<h2 class="anchored" data-anchor-id="final-reflection-answering-the-publics-question">Final reflection – Answering the public’s question</h2>
+<p>A member of the public asks:</p>
+<blockquote class="blockquote">
+<p><strong>“So… how long will my red kite live?”</strong></p>
+</blockquote>
+<p>Using the statistics you calculated:</p>
+<ol type="1">
+<li><p>Which number would you give as a <strong>central</strong> answer?</p></li>
+<li><p>Which statistics would you use to explain <strong>variation</strong>?</p></li>
+<li><p>How would you communicate <strong>uncertainty</strong> honestly but reassuringly?</p></li>
+</ol>
+<p>Write a short paragraph (3–4 sentences) answering the question in clear, non‑technical language.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
